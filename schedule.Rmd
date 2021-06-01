@@ -11,21 +11,6 @@ output:
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 ```
 
-## Konton och förberedelse
-
-För att komma åt kursmateriel och lämna in laborationer behöver du konton på GitHub och RStudio Cloud.
-
-- Skapa ett konto på [GitHub](https://github.com/join). I [inställningarna till din profil](https://github.com/settings/profile) anger ditt namn så som det är skrivet i Ladok  (om du av någon anledning inte vill ange ditt fullständiga namn här kontaktar du kursansvarig).
-
-- Skapa därefter ett konto på [RStudio Cloud](https://rstudio.cloud/plans/free) (Cloud Free), välj alternativet **Sign up with GitHub** för att koppla de två plattformarna. Gå till dina [inställningarna för autentisering](https://login.rstudio.cloud/identity/authentication) och kryssa *Private repo access also enabled* som nedan.
-![](img/repo_access.png)
-
-- Ange ditt GitHub användarnamn i [formuläret på kursens sida på kurser.math](https://kurser.math.su.se/mod/feedback/view.php?id=64391). Inom några dagar kommer du få ett epost med ämnesrad *[GitHub] @mskoldSU has invited you to join the @MT3003-ST21 organization*. Tacka ja till inbjudan.
-
-- På måndag 7/6 kommer du få epost med inbjudan till kursens arbetsyta på RStudio Cloud, tacka ja till den.
-
-***
-
 ## **v23**: Introduktion till kursverktyg
 
 Den första veckan kommer innehålla administration och avslutas med en provkörning av kursverktygen i laboration 1.
