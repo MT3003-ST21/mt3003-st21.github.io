@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Veckoschema</title>
+
+<script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Introduktion till databehandling (MT3003)</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Hem</a>
+</li>
+<li>
+  <a href="schedule.html">Veckoshema</a>
+</li>
+<li>
+  <a href="lab.html">Laborationer</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Veckoschema</h1>
+
+</div>
+
+
+<div id="konton-och-förberedelse" class="section level2">
+<h2>Konton och förberedelse</h2>
+<p>För att komma åt kursmateriel och lämna in laborationer behöver du konton på GitHub och RStudio Cloud.</p>
+<ul>
+<li><p>Skapa ett konto på <a href="https://github.com/join">GitHub</a>. I <a href="https://github.com/settings/profile">inställningarna till din profil</a> anger ditt namn så som det är skrivet i Ladok (om du av någon anledning inte vill ange ditt fullständiga namn här kontaktar du kursansvarig).</p></li>
+<li><p>Skapa därefter ett konto på <a href="https://rstudio.cloud/plans/free">RStudio Cloud</a> (Cloud Free), välj alternativet <strong>Sign up with GitHub</strong> för att koppla de två plattformarna. Gå till dina <a href="https://login.rstudio.cloud/identity/authentication">inställningarna för autentisering</a> och kryssa <em>Private repo access also enabled</em> som nedan. <img src="img/repo_access.png" /></p></li>
+<li><p>Ange ditt GitHub användarnamn i <a href="https://kurser.math.su.se/mod/feedback/view.php?id=64391">formuläret på kursens sida på kurser.math</a>. Inom några dagar kommer du få ett epost med ämnesrad <em>[GitHub] <span class="citation">@mskoldSU</span> has invited you to join the <span class="citation">@MT3003-ST21</span> organization</em>. Tacka ja till inbjudan.</p></li>
+<li><p>På måndag 7/6 kommer du få epost med inbjudan till kursens arbetsyta på RStudio Cloud, tacka ja till den.</p></li>
+</ul>
+<hr />
+</div>
+<div id="v23-introduktion-till-kursverktyg" class="section level2">
+<h2><strong>v23</strong>: Introduktion till kursverktyg</h2>
+<p>Den första veckan kommer innehålla administration och avslutas med en provkörning av kursverktygen i laboration 1.</p>
+<div id="mål-denna-vecka" class="section level4">
+<h4>Mål denna vecka</h4>
+<ul>
+<li>Dina kurskonto på <a href="https://github.com/">GitHub</a> och <a href="https://rstudio.cloud/">RStudio Cloud</a> skall vara kopplade till kursens arbetsytor.</li>
+<li>Första laborationen inlämnad. (Deadline söndag).</li>
+</ul>
+</div>
+<div id="kursmaterial-prel." class="section level4">
+<h4>Kursmaterial (prel.)</h4>
+<ul>
+<li>Hadley Wickham and Garrett Grolemund, <em>R for Data Science</em> (i fortsättningen R4DS): <a href="https://r4ds.had.co.nz/introduction.html">Kapitel 1, Introduction</a>.</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="v24-enkla-visualiseringar-och-utdrag" class="section level2">
+<h2><strong>v24</strong>: Enkla visualiseringar och utdrag</h2>
+<div id="mål-denna-vecka-1" class="section level4">
+<h4>Mål denna vecka</h4>
+<ul>
+<li>Att ha grundläggande förståelse för Rs datatyper.</li>
+<li>Att kunna skapa enkla punktdiagram och förstå de grundläggande komponenterna i en <code>ggplot</code>-visualisering (<code>data</code>, <code>mapping</code>, <code>geom</code>).</li>
+<li>Att kunna sortera och filtrera data.</li>
+</ul>
+</div>
+<div id="kursmaterial-prel.-1" class="section level4">
+<h4>Kursmaterial (prel.)</h4>
+<ul>
+<li>R4DS: <a href="https://r4ds.had.co.nz/introduction.html">Kapitel 2-4</a>.</li>
+</ul>
+<p>RStudio Primers:</p>
+<ul>
+<li><a href="https://rstudio.cloud/learn/primers/1">The Basics</a></li>
+<li><a href="https://rstudio.cloud/learn/primers/2.1">Working with tibbles</a></li>
+<li><a href="https://rstudio.cloud/learn/primers/2.2">Isolating data with dplyr</a></li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="v25-sammanfatta-en-tabell" class="section level2">
+<h2><strong>v25</strong>: Sammanfatta en tabell</h2>
+<div id="mål-denna-vecka-2" class="section level4">
+<h4>Mål denna vecka</h4>
+<ul>
+<li>Skapa nya kolumner med <code>mutate</code></li>
+<li>Sammanställningar med <code>group_by</code> och <code>summarise</code></li>
+<li>Skriva en enkel rapport i Rmarkdown.</li>
+</ul>
+</div>
+<div id="kursmaterial-prel.-2" class="section level4">
+<h4>Kursmaterial (prel.)</h4>
+<ul>
+<li>R4DS: <a href="https://r4ds.had.co.nz/transform.html">Kapitel 5-6</a>.</li>
+</ul>
+<p>RStudio Primers:</p>
+<ul>
+<li><a href="https://rstudio.cloud/learn/primers/2.3">Deriving information with dplyr</a></li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="v26-utforska-data-med-visualiseringar" class="section level2">
+<h2><strong>v26</strong>: Utforska data med visualiseringar</h2>
+<div id="mål-denna-vecka-3" class="section level4">
+<h4>Mål denna vecka</h4>
+<ul>
+<li>Utforska data med <code>ggplot</code>.</li>
+<li>Andra laborationen inlämnad (deadline söndag).</li>
+</ul>
+</div>
+<div id="kursmaterial-prel.-3" class="section level4">
+<h4>Kursmaterial (prel.)</h4>
+<ul>
+<li>R4DS: <a href="https://r4ds.had.co.nz/exploratory-data-analysis.html">Kapitel 7</a>.</li>
+</ul>
+<p>RStudio Primers:</p>
+<ul>
+<li><a href="https://rstudio.cloud/learn/primers/3">Visualize Data</a></li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="v27-läsa-data-från-fil" class="section level2">
+<h2><strong>v27</strong>: Läsa data från fil</h2>
+<div id="mål-denna-vecka-4" class="section level4">
+<h4>Mål denna vecka</h4>
+<ul>
+<li>Att läsa data från fil</li>
+</ul>
+</div>
+<div id="kursmaterial-prel.-4" class="section level4">
+<h4>Kursmaterial (prel.)</h4>
+<ul>
+<li>R4DS: <a href="https://r4ds.had.co.nz/data-import.html">Kapitel 9-11</a>.</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="v28-omforma-och-sammanfläta-tabeller" class="section level2">
+<h2><strong>v28</strong>: Omforma och sammanfläta tabeller</h2>
+<hr />
+</div>
+<div id="v29-arbeta-med-text" class="section level2">
+<h2><strong>v29</strong>: Arbeta med text</h2>
+<hr />
+</div>
+<div id="v30-funktioner-och-iteration" class="section level2">
+<h2><strong>v30</strong>: Funktioner och iteration</h2>
+<hr />
+</div>
+<div id="v31-apier-databaser-och-webbskrap" class="section level2">
+<h2><strong>v31</strong>: APIer, databaser och webbskrap</h2>
+<hr />
+</div>
+<div id="v32-mer-om-visualisering" class="section level2">
+<h2><strong>v32</strong>: Mer om visualisering</h2>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
