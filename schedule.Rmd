@@ -22,7 +22,7 @@ Den första veckan kommer innehålla administration och avslutas med en provkör
 #### Kursmaterial (prel.)
 
 - Hadley Wickham and Garrett Grolemund, *R for Data Science* (i fortsättningen R4DS): [Kapitel 1, Introduction](https://r4ds.had.co.nz/introduction.html).
-
+- [Kursintroduktion (YouTube)](https://youtu.be/gQUjg5cMUGU)
 
 
 ***

@@ -9,7 +9,8 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
 ```
 
-Här publicerar vi kursens inlämningsuppgifter.
+
+### [Laboration 1](lab1.html) (deadline 2021-06-13)
 
 ## Kamratgranskning
 
