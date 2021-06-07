@@ -19,11 +19,14 @@ Den första veckan kommer innehålla administration och avslutas med en provkör
 - Dina kurskonto på [GitHub](https://github.com/)  och [RStudio Cloud](https://rstudio.cloud/) skall vara kopplade till kursens arbetsytor.
 - Första laborationen inlämnad. (Deadline söndag).
 
-#### Kursmaterial (prel.)
+#### Kursmaterial
 
 - Hadley Wickham and Garrett Grolemund, *R for Data Science* (i fortsättningen R4DS): [Kapitel 1, Introduction](https://r4ds.had.co.nz/introduction.html).
-- [Kursintroduktion (YouTube)](https://youtu.be/gQUjg5cMUGU)
-
+- [Kursintroduktion (YouTube, 14:34)](https://youtu.be/gQUjg5cMUGU)
+- [RStudio Cloud introduktion(YouTube, 12:52)](https://youtu.be/hsJTGkrsQkc)
+- [RMarkdown introduktion (YouTube, 14:42)](https://youtu.be/Ckd3Yfkx5Hk)
+- [GitHub introduktion (YouTube, 13:05)](https://youtu.be/nmxg_wthhHQ)
+- [Examination och betyg (kurshemsida)](https://kurser.math.su.se/pluginfile.php/109552/mod_resource/content/1/Betygskriterier.pdf)
 
 ***
 
