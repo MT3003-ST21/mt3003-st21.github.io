@@ -346,15 +346,15 @@ div.tocify {
 <div id="v23-introduktion-till-kursverktyg" class="section level2">
 <h2><strong>v23</strong>: Introduktion till kursverktyg</h2>
 <p>Den första veckan kommer innehålla administration och avslutas med en provkörning av kursverktygen i laboration 1.</p>
-<div id="mål-denna-vecka" class="section level4">
-<h4>Mål denna vecka</h4>
+<div id="mål-denna-vecka" class="section level3">
+<h3>Mål denna vecka</h3>
 <ul>
 <li>Dina kurskonto på <a href="https://github.com/">GitHub</a> och <a href="https://rstudio.cloud/">RStudio Cloud</a> skall vara kopplade till kursens arbetsytor.</li>
 <li>Första laborationen inlämnad. (Deadline söndag).</li>
 </ul>
 </div>
-<div id="kursmaterial" class="section level4">
-<h4>Kursmaterial</h4>
+<div id="kursmaterial" class="section level3">
+<h3>Kursmaterial</h3>
 <ul>
 <li>Hadley Wickham and Garrett Grolemund, <em>R for Data Science</em> (i fortsättningen R4DS): <a href="https://r4ds.had.co.nz/introduction.html">Kapitel 1, Introduction</a>.</li>
 <li><a href="https://youtu.be/gQUjg5cMUGU">Kursintroduktion (YouTube, 14:34)</a></li>
@@ -366,18 +366,17 @@ div.tocify {
 <hr />
 </div>
 </div>
-<div id="v24-enkla-visualiseringar-och-utdrag" class="section level2">
-<h2><strong>v24</strong>: Enkla visualiseringar och utdrag</h2>
-<div id="mål-denna-vecka-1" class="section level4">
-<h4>Mål denna vecka</h4>
+<div id="v24-enkla-visualiseringar" class="section level2">
+<h2><strong>v24</strong>: Enkla visualiseringar</h2>
+<div id="mål-denna-vecka-1" class="section level3">
+<h3>Mål denna vecka</h3>
 <ul>
 <li>Att ha grundläggande förståelse för Rs datatyper.</li>
-<li>Att kunna skapa enkla punktdiagram och förstå de grundläggande komponenterna i en <code>ggplot</code>-visualisering (<code>data</code>, <code>mapping</code>, <code>geom</code>).</li>
-<li>Att kunna sortera och filtrera data.</li>
+<li>Att kunna skapa enkla diagram och förstå de grundläggande komponenterna i en <code>ggplot</code>-visualisering (<code>data</code>, <code>mapping</code>, <code>geom</code>).</li>
 </ul>
 </div>
-<div id="kursmaterial-prel." class="section level4">
-<h4>Kursmaterial (prel.)</h4>
+<div id="kursmaterial-prel." class="section level3">
+<h3>Kursmaterial (prel.)</h3>
 <ul>
 <li>R4DS: <a href="https://r4ds.had.co.nz/introduction.html">Kapitel 2-4</a>.</li>
 </ul>
@@ -385,28 +384,76 @@ div.tocify {
 <ul>
 <li><a href="https://rstudio.cloud/learn/primers/1">The Basics</a></li>
 <li><a href="https://rstudio.cloud/learn/primers/2.1">Working with tibbles</a></li>
-<li><a href="https://rstudio.cloud/learn/primers/2.2">Isolating data with dplyr</a></li>
 </ul>
+</div>
+<div id="övningar" class="section level3">
+<h3>Övningar</h3>
+<p>Under rubriken övningar hittar du träningsmaterial som inte ingår i kursens examination. Detta ger bra övning inför inlämningsuppgifterna, med fördelen att du kan fråga och tipsa hur mycket du vill på kursens Discord. Skapa ett separat projekt i RStudio Cloud där du arbetar med övningar och skapa en mapp <code>data</code> i detta projekt där du kan spara de datamaterial vi använder.</p>
+<p>Gör inte bara uppgifterna utan experimentera med data och försök hitta på egna frågeställningar att besvara, fråga på Discord om något inte blev som du tänkt.</p>
+<div id="ettor-på-stan" class="section level4">
+<h4>Ettor på stan</h4>
+<p>Du kan ladda ner en kopia av data från inlämningsuppgift 1 med</p>
+<pre class="r"><code>download.file(&quot;https://github.com/MT3003-ST21/data/raw/main/booli_ettor_2021-05-28.csv&quot;,
+              &quot;data/booli_ettor_2021-05-28.csv&quot;)</code></pre>
+<p>och läsa in den med</p>
+<pre class="r"><code>booli_ettor &lt;- read_csv(&quot;data/booli_ettor_2021-05-28.csv&quot;)</code></pre>
+<p>Notera att det går bra att läsa direkt från en url, som i</p>
+<pre class="r"><code>booli_ettor &lt;- read_csv(&quot;https://github.com/MT3003-ST21/data/raw/main/booli_ettor_2021-05-28.csv&quot;)</code></pre>
+<p>men vi föredrar att ladda ner filen en gång, då kan vi vara säkra på att vi arbetar med samma material nästa gång vi öppnar projektet. Använd din egen fantasi för att undersöka materialet med enkla figurer, till exempel kan du undersöka</p>
+<ul>
+<li>Hur påverkar yta (<code>livingArea</code>) hyran (<code>rent</code>)?</li>
+<li>SVT rapporterade i våras om <a href="https://www.svt.se/nyheter/inrikes/rekordmanga-anmalningar-om-lockpriser">rekordmånga anmälningar om lockpriser</a>. Undersök hur förekomsten av lockpriser varierat genom att plotta kvoten mellan slutpris och utgångspris (<code>soldPrice / listPrice</code>) mot försäljningsdatum (<code>soldDate</code>). Tips: Om figuren förstörs av ett extremt värde kan du zooma in genom att lägga till <code>+ ylim(c(0, 2))</code> för att bestämma gränserna på <code>y</code>-axeln.</li>
+<li>Vilka veckodagar publicerar mäklarna sina annonser? Gör ett stapeldiagram över antalet annonser per veckodag, veckodag får du genom <code>weekdays(published)</code>.</li>
+</ul>
+<p><em>Faktorvariabler:</em> Ovanstående övning illustrerar ett vanligt problem. Veckodagarna blir sorterade i alfabetisk ordning medan vi antagligen vill ha dem i kronologisk. Problemet kommer av att en variabel av typen <code>character</code> inte innehåller någon information om kategoriernas ordning, det gör däremot en variabel av typen <code>factor</code>. För att ändra ordning behöver vi alltså göra om <code>weekdays(published)</code> till en faktorvariabel. Om vi istället för <code>weekdays(published)</code> använder <code>factor(weekdays(published), levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))</code> så ordnas staplarna i den ordning vi angett.</p>
+</div>
+<div id="systembolagets-katalog" class="section level4">
+<h4>Systembolagets katalog</h4>
+<p>Systembolaget brukade ha hela sin katalog öppen för nedladdning, <a href="https://api-portal.systembolaget.se/api-update-blog/changes-in-the-api-portal">så är inte längre fallet</a> men en kopia från 2019 finns sparad i <code>systembolaget_2019-10-30.csv</code>. Ladda ner den med</p>
+<pre class="r"><code>download.file(&quot;https://github.com/MT3003-ST21/data/raw/main/systembolaget_2019-10-30.csv&quot;,
+              &quot;data/systembolaget_2019-10-30.csv&quot;)</code></pre>
+<p>och läs in med</p>
+<pre class="r"><code>bolaget &lt;- read_csv(&quot;data/systembolaget_2019-10-30.csv&quot;)</code></pre>
+<p>skapa dig en överblick genom att använda t.ex. <code>glimpse</code> eller <code>View</code>. Ett enkelt sätt att få en överblick över en viss kategorisk variabel (om kategorierna inte är för många) är ett stapeldiagram med <code>geom_bar</code>, prova till exempel med variablerna <code>Varugrupp</code> eller <code>Ursprungsland</code>. Man kan koppla den kategoriska variabeln antingen till y eller x-axeln (med <code>aes(x = Varugrupp)</code> respektive <code>aes(y = Varugrupp)</code>). Vilket passar bäst?</p>
+<p>Vilken varugrupp har högst literpris? Gör ett punktdiagram med <code>Varugrupp</code> på <code>y</code>-axeln och <code>PrisPerLiter</code> på <code>x</code>-axeln. Eftersom fördelningen för <code>PrisPerLiter</code> kan det öka läsbarheten att använda en logaritmisk skala på <code>x</code>-axeln genom att lägga till <code>+ scale_x_log10()</code> till anropet. Som med veckodagarna ovan är det inte optimalt att ordna kategorierna alfabetiskt, prova att använda <code>y = fct_reorder(Varugrupp, PrisPerLiter)</code> istället för <code>y = Varugrupp</code>. Funktionen <code>fct_reorder</code> gör om <code>Varugrupp</code> till faktorvariabel och ordnar kategorierna efter <code>PrisPerLiter</code> (medianen i varje grupp).</p>
+<p>Med hjälp av <code>filter</code> kan vi begränsa oss till vissa kategorier (mer om detta nästa vecka). Vad genererar till exempel följande kod?</p>
+<pre class="r"><code>bolaget_subdata &lt;- filter(bolaget, 
+                      Ursprunglandnamn %in% c(&quot;Sverige&quot;, &quot;Storbritannien&quot;, &quot;Frankrike&quot;, &quot;Spanien&quot;), 
+                      Varugrupp %in% c(&quot;Öl&quot;, &quot;Rött vin&quot;, &quot;Whisky&quot;, &quot;Aperitif och dessert&quot;))
+ggplot(data = bolaget_subdata,
+       mapping = aes(y = Ursprunglandnamn)) + 
+  geom_bar() + 
+  facet_wrap(~Varugrupp, scales = &quot;free_x&quot;)</code></pre>
+</div>
+<div id="gapminder-data" class="section level4">
+<h4>Gapminder data</h4>
+<p><a href="https://www.gapminder.org/">Gapminder foundation</a> verkar för att förändra människors syn på världen med data. Titta gärna på något av <a href="https://www.ted.com/speakers/hans_rosling?language=sv">Hans Roslings föredrag</a> eller använd deras <a href="https://www.gapminder.org/tools/#$chart-type=bubbles&amp;url=v1">interaktiva verktyg</a> och försök återskapa figurerna med <code>ggplot</code>. En begränsad del av deras data har sammanställts i <code>gapminder_2021-06-14.csv</code> (se <a href="https://www.gapminder.org/data/documentation/">dokumentation</a>). Ladda ner med</p>
+<pre class="r"><code>download.file(&quot;https://github.com/MT3003-ST21/data/raw/main/gapminder_2021-06-14.csv&quot;,
+              &quot;data/gapminder_2021-06-14.csv&quot;)</code></pre>
+<p>och läs in med</p>
+<pre class="r"><code>gapminder &lt;- read_csv(&quot;data/gapminder_2021-06-14.csv&quot;)</code></pre>
 <hr />
+</div>
 </div>
 </div>
 <div id="v25-sammanfatta-en-tabell" class="section level2">
 <h2><strong>v25</strong>: Sammanfatta en tabell</h2>
-<div id="mål-denna-vecka-2" class="section level4">
-<h4>Mål denna vecka</h4>
+<div id="mål-denna-vecka-2" class="section level3">
+<h3>Mål denna vecka</h3>
 <ul>
+<li>Att kunna sortera och filtrera med <code>arrange</code> och <code>filter</code>.</li>
 <li>Skapa nya kolumner med <code>mutate</code></li>
 <li>Sammanställningar med <code>group_by</code> och <code>summarise</code></li>
-<li>Skriva en enkel rapport i Rmarkdown.</li>
 </ul>
 </div>
-<div id="kursmaterial-prel.-1" class="section level4">
-<h4>Kursmaterial (prel.)</h4>
+<div id="kursmaterial-prel.-1" class="section level3">
+<h3>Kursmaterial (prel.)</h3>
 <ul>
 <li>R4DS: <a href="https://r4ds.had.co.nz/transform.html">Kapitel 5-6</a>.</li>
 </ul>
 <p>RStudio Primers:</p>
 <ul>
+<li><a href="https://rstudio.cloud/learn/primers/2.2">Isolating data with dplyr</a></li>
 <li><a href="https://rstudio.cloud/learn/primers/2.3">Deriving information with dplyr</a></li>
 </ul>
 <hr />
@@ -414,15 +461,16 @@ div.tocify {
 </div>
 <div id="v26-utforska-data-med-visualiseringar" class="section level2">
 <h2><strong>v26</strong>: Utforska data med visualiseringar</h2>
-<div id="mål-denna-vecka-3" class="section level4">
-<h4>Mål denna vecka</h4>
+<div id="mål-denna-vecka-3" class="section level3">
+<h3>Mål denna vecka</h3>
 <ul>
+<li>Skriva en enkel rapport i Rmarkdown.</li>
 <li>Utforska data med <code>ggplot</code>.</li>
 <li>Andra laborationen inlämnad (deadline söndag).</li>
 </ul>
 </div>
-<div id="kursmaterial-prel.-2" class="section level4">
-<h4>Kursmaterial (prel.)</h4>
+<div id="kursmaterial-prel.-2" class="section level3">
+<h3>Kursmaterial (prel.)</h3>
 <ul>
 <li>R4DS: <a href="https://r4ds.had.co.nz/exploratory-data-analysis.html">Kapitel 7</a>.</li>
 </ul>
@@ -435,14 +483,14 @@ div.tocify {
 </div>
 <div id="v27-läsa-data-från-fil" class="section level2">
 <h2><strong>v27</strong>: Läsa data från fil</h2>
-<div id="mål-denna-vecka-4" class="section level4">
-<h4>Mål denna vecka</h4>
+<div id="mål-denna-vecka-4" class="section level3">
+<h3>Mål denna vecka</h3>
 <ul>
 <li>Att läsa data från fil</li>
 </ul>
 </div>
-<div id="kursmaterial-prel.-3" class="section level4">
-<h4>Kursmaterial (prel.)</h4>
+<div id="kursmaterial-prel.-3" class="section level3">
+<h3>Kursmaterial (prel.)</h3>
 <ul>
 <li>R4DS: <a href="https://r4ds.had.co.nz/data-import.html">Kapitel 9-11</a>.</li>
 </ul>

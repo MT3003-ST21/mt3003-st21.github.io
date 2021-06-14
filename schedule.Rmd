@@ -15,11 +15,11 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 Den första veckan kommer innehålla administration och avslutas med en provkörning av kursverktygen i laboration 1.
 
-#### Mål denna vecka
+### Mål denna vecka
 - Dina kurskonto på [GitHub](https://github.com/)  och [RStudio Cloud](https://rstudio.cloud/) skall vara kopplade till kursens arbetsytor.
 - Första laborationen inlämnad. (Deadline söndag).
 
-#### Kursmaterial
+### Kursmaterial
 
 - Hadley Wickham and Garrett Grolemund, *R for Data Science* (i fortsättningen R4DS): [Kapitel 1, Introduction](https://r4ds.had.co.nz/introduction.html).
 - [Kursintroduktion (YouTube, 14:34)](https://youtu.be/gQUjg5cMUGU)
@@ -30,16 +30,15 @@ Den första veckan kommer innehålla administration och avslutas med en provkör
 
 ***
 
-## **v24**: Enkla visualiseringar och utdrag
+## **v24**: Enkla visualiseringar
 
-#### Mål denna vecka
+### Mål denna vecka
 
 - Att ha grundläggande förståelse för Rs datatyper.
-- Att kunna skapa enkla punktdiagram och förstå de grundläggande komponenterna i en `ggplot`-visualisering (`data`, `mapping`, `geom`).
-- Att kunna sortera och filtrera data.
+- Att kunna skapa enkla diagram och förstå de grundläggande komponenterna i en `ggplot`-visualisering (`data`, `mapping`, `geom`).
 
 
-#### Kursmaterial (prel.)
+### Kursmaterial (prel.)
 
 - R4DS: [Kapitel 2-4](https://r4ds.had.co.nz/introduction.html).
 
@@ -47,25 +46,101 @@ RStudio Primers:
 
 - [The Basics](https://rstudio.cloud/learn/primers/1)
 - [Working with tibbles](https://rstudio.cloud/learn/primers/2.1)
-- [Isolating data with dplyr](https://rstudio.cloud/learn/primers/2.2)
+
+### Övningar
+
+Under rubriken övningar hittar du träningsmaterial som inte ingår i kursens examination. Detta ger bra övning inför inlämningsuppgifterna, med fördelen att du kan fråga och tipsa hur mycket du vill på kursens Discord. Skapa ett separat projekt i RStudio Cloud där du arbetar med övningar och skapa en mapp `data` i detta projekt där du kan spara de datamaterial vi använder.
+
+
+Gör inte bara uppgifterna utan experimentera med data och försök hitta på egna frågeställningar att besvara, fråga på Discord om något inte blev som du tänkt. 
+
+#### Ettor på stan
+
+Du kan ladda ner en kopia av data från inlämningsuppgift 1 med
+```{r, eval = FALSE, echo = TRUE}
+download.file("https://github.com/MT3003-ST21/data/raw/main/booli_ettor_2021-05-28.csv",
+              "data/booli_ettor_2021-05-28.csv")
+```
+och läsa in den med
+```{r, eval = FALSE, echo = TRUE}
+booli_ettor <- read_csv("data/booli_ettor_2021-05-28.csv")
+```
+Notera att det går bra att läsa direkt från en url, som i
+```{r, eval = FALSE, echo = TRUE}
+booli_ettor <- read_csv("https://github.com/MT3003-ST21/data/raw/main/booli_ettor_2021-05-28.csv")
+```
+men vi föredrar att ladda ner filen en gång, då kan vi vara säkra på att vi arbetar med samma material nästa gång vi öppnar projektet. Använd din egen fantasi för att undersöka materialet med enkla figurer, till exempel kan du undersöka
+
+- Hur påverkar yta (`livingArea`) hyran (`rent`)?
+- SVT rapporterade i våras om [rekordmånga anmälningar om lockpriser](https://www.svt.se/nyheter/inrikes/rekordmanga-anmalningar-om-lockpriser). Undersök hur förekomsten av lockpriser varierat genom att plotta  kvoten mellan slutpris och utgångspris (`soldPrice / listPrice`) mot försäljningsdatum (`soldDate`). Tips: Om figuren förstörs av ett extremt värde kan du zooma in genom att lägga till  `+ ylim(c(0, 2))` för att bestämma gränserna på `y`-axeln.
+- Vilka veckodagar publicerar mäklarna sina annonser? Gör ett stapeldiagram över antalet annonser per veckodag, veckodag får du genom `weekdays(published)`.
+
+*Faktorvariabler:* Ovanstående övning illustrerar ett vanligt problem. Veckodagarna blir sorterade i alfabetisk ordning medan vi antagligen vill ha dem i kronologisk. Problemet kommer av att en variabel av typen `character` inte innehåller någon information om kategoriernas ordning, det gör däremot en variabel av typen `factor`. För att ändra ordning behöver vi alltså göra om `weekdays(published)` till en faktorvariabel. Om vi istället för `weekdays(published)` använder `factor(weekdays(published), levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))` så ordnas staplarna i den ordning vi angett. 
+
+
+#### Systembolagets katalog
+
+Systembolaget brukade ha hela sin katalog öppen för nedladdning, [så är inte längre fallet](https://api-portal.systembolaget.se/api-update-blog/changes-in-the-api-portal) men en kopia från 2019 finns sparad i `systembolaget_2019-10-30.csv`. Ladda ner den med
+
+```{r, eval = FALSE, echo = TRUE}
+download.file("https://github.com/MT3003-ST21/data/raw/main/systembolaget_2019-10-30.csv",
+              "data/systembolaget_2019-10-30.csv")
+```
+
+och läs in med
+
+```{r, eval = FALSE, echo = TRUE}
+bolaget <- read_csv("data/systembolaget_2019-10-30.csv")
+```
+
+skapa dig en överblick genom att använda t.ex. `glimpse` eller `View`. Ett enkelt sätt att få en överblick över en viss kategorisk variabel (om kategorierna inte är för många) är ett stapeldiagram med `geom_bar`, prova till exempel med variablerna `Varugrupp` eller `Ursprungsland`. Man kan koppla den kategoriska variabeln antingen till y eller x-axeln (med `aes(x = Varugrupp)` respektive `aes(y = Varugrupp)`). Vilket passar bäst?
+
+Vilken varugrupp har högst literpris? Gör ett punktdiagram med `Varugrupp` på `y`-axeln och `PrisPerLiter` på `x`-axeln. Eftersom fördelningen för `PrisPerLiter` kan det öka läsbarheten att använda en logaritmisk skala på `x`-axeln genom att lägga till `+ scale_x_log10()` till anropet. Som med veckodagarna ovan är det inte optimalt att ordna kategorierna alfabetiskt, prova att använda `y = fct_reorder(Varugrupp, PrisPerLiter)` istället för `y = Varugrupp`. Funktionen `fct_reorder` gör om `Varugrupp` till faktorvariabel och ordnar kategorierna efter `PrisPerLiter` (medianen i varje grupp).
+
+Med hjälp av `filter` kan vi begränsa oss till vissa kategorier (mer om detta nästa vecka). Vad genererar till exempel följande kod?
+```{r, eval = FALSE, echo = TRUE}
+bolaget_subdata <- filter(bolaget, 
+                      Ursprunglandnamn %in% c("Sverige", "Storbritannien", "Frankrike", "Spanien"), 
+                      Varugrupp %in% c("Öl", "Rött vin", "Whisky", "Aperitif och dessert"))
+ggplot(data = bolaget_subdata,
+       mapping = aes(y = Ursprunglandnamn)) + 
+  geom_bar() + 
+  facet_wrap(~Varugrupp, scales = "free_x")
+```
+
+#### Gapminder data
+
+[Gapminder foundation](https://www.gapminder.org/) verkar för att förändra människors syn på världen med data. Titta gärna på något av [Hans Roslings föredrag](https://www.ted.com/speakers/hans_rosling?language=sv) eller använd deras [interaktiva verktyg](https://www.gapminder.org/tools/#$chart-type=bubbles&url=v1) och försök återskapa figurerna med `ggplot`. En begränsad del av deras data har sammanställts i `gapminder_2021-06-14.csv` (se [dokumentation](https://www.gapminder.org/data/documentation/)). Ladda ner med
+
+
+```{r, eval = FALSE, echo = TRUE}
+download.file("https://github.com/MT3003-ST21/data/raw/main/gapminder_2021-06-14.csv",
+              "data/gapminder_2021-06-14.csv")
+```
+och läs in med
+```{r, eval = FALSE, echo = TRUE}
+gapminder <- read_csv("data/gapminder_2021-06-14.csv")
+```
+
 
 ***
 
 ## **v25**: Sammanfatta en tabell
 
 
-#### Mål denna vecka
+### Mål denna vecka
 
+- Att kunna sortera och filtrera med `arrange` och `filter`.
 - Skapa nya kolumner med `mutate`
 - Sammanställningar med `group_by` och `summarise`
-- Skriva en enkel rapport i Rmarkdown.
 
-#### Kursmaterial (prel.)
+### Kursmaterial (prel.)
 
 - R4DS: [Kapitel 5-6](https://r4ds.had.co.nz/transform.html).
 
 RStudio Primers:
 
+- [Isolating data with dplyr](https://rstudio.cloud/learn/primers/2.2)
 - [Deriving information with dplyr](https://rstudio.cloud/learn/primers/2.3)
 
 
@@ -73,12 +148,13 @@ RStudio Primers:
 
 ## **v26**: Utforska data med visualiseringar
 
-#### Mål denna vecka
+### Mål denna vecka
 
+- Skriva en enkel rapport i Rmarkdown.
 - Utforska data med `ggplot`.
 - Andra laborationen inlämnad (deadline söndag).
 
-#### Kursmaterial (prel.)
+### Kursmaterial (prel.)
 
 - R4DS: [Kapitel 7](https://r4ds.had.co.nz/exploratory-data-analysis.html).
 
@@ -90,11 +166,11 @@ RStudio Primers:
 
 ## **v27**: Läsa data från fil
 
-#### Mål denna vecka
+### Mål denna vecka
 
 - Att läsa data från fil
 
-#### Kursmaterial (prel.)
+### Kursmaterial (prel.)
 
 - R4DS: [Kapitel 9-11](https://r4ds.had.co.nz/data-import.html).
 
