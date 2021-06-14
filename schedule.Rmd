@@ -38,7 +38,7 @@ Den första veckan kommer innehålla administration och avslutas med en provkör
 - Att kunna skapa enkla diagram och förstå de grundläggande komponenterna i en `ggplot`-visualisering (`data`, `mapping`, `geom`).
 
 
-### Kursmaterial (prel.)
+### Kursmaterial
 
 - R4DS: [Kapitel 2-4](https://r4ds.had.co.nz/introduction.html).
 
