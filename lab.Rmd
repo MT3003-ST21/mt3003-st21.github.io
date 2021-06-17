@@ -12,6 +12,9 @@ library(tidyverse)
 
 ### [Laboration 1](lab1.html) (deadline 2021-06-13)
 
+### [Laboration 2](lab2.html) (deadline 2021-07-04)
+
+
 ## Kamratgranskning
 
 Om du lämnat in en inlämningsuppgift innan deadline (söndag) kommer du dagen efter deadline (måndag) få tillgång till en kursares inlämning. Innan midnatt följande onsdag skall du lämnat in en kamratgranskning.
