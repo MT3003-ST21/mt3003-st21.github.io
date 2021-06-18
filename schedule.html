@@ -456,7 +456,33 @@ ggplot(data = bolaget_subdata,
 <li><a href="https://rstudio.cloud/learn/primers/2.2">Isolating data with dplyr</a></li>
 <li><a href="https://rstudio.cloud/learn/primers/2.3">Deriving information with dplyr</a></li>
 </ul>
+</div>
+<div id="övningar-1" class="section level3">
+<h3>Övningar</h3>
+<div id="ettor-på-stan-1" class="section level4">
+<h4>Ettor på stan</h4>
+<ul>
+<li><p>Använd <code>arrange</code> (eventuellt i kombination med <code>select</code> för att begränsa utskriften) för att verifiera att bostaden med äldst <code>constructionYear</code> ligger i vad som troligen är <a href="https://sv.wikipedia.org/wiki/Baggensgatan_27">Stockholms äldsta bevarande bostadshus</a>. För flera rader antar <code>constructionYear</code> värdet <code>NA</code>, värde saknas. Hur hanteras detta av <code>arrange</code>?</p></li>
+<li><p>Använd <code>count</code> och <code>arrange</code> för att hitta den gatuadress där det sålts flest ettor. Detta är <a href="https://stockholmskallan.stockholm.se/post/32632">Kvinnornas hus</a> som huvudsakligen består av ettor med kokvrå.</p></li>
+<li><p>Inför variabeln <code>priceRise</code> som prisökningen i procent (baserat på <code>soldPrice</code> och <code>listPrice</code>) och bestäm medelvärdet av <code>priceRise</code> per mäklare (<code>source.name</code>) för alla mäklare med minst 100 försäljningar och sammanfatta med ett histogram. <strong>OBS</strong>: Hur hanterar funktionen <code>mean</code> saknade värden? En försäljning i materialet sticker ut, kan du hitta och filtrera bort den?</p></li>
+</ul>
+</div>
+<div id="gapminder-data-1" class="section level4">
+<h4>Gapminder data</h4>
+<ul>
+<li>Gör en tabell över medelinkomsten per capita för varje kontinent 2020. Tänk på att även <code>income</code> är räknat i per capita, du behöver alltså bestämma kontinenternas totala inkomst och dela på den totala populationen.</li>
+</ul>
+</div>
+<div id="systembolagets-katalog-1" class="section level4">
+<h4>Systembolagets katalog</h4>
+<ul>
+<li>Illustrera hur medelpriset per liter på Röda viner beror på årgång (du kan begränsa dig till årgångar med minst 10 produkter).</li>
+<li>Illustrera hur medelpriset per liter på Röda viner beror på ursprungsland med ett stapeldiagram, ordna staplarna efter medelpris (du kan begränsa dig till länder med minst 10 produkter).</li>
+<li>Kolumnen <code>Alkoholhalt</code> är kodad som textvariabel eftersom den innehåller ett procenttecken, gör om den till numerisk genom att först ta bort procenttecknet med <code>str_remove</code> och sedan konvertera med <code>as.numeric</code>. Illustrera sedan hur pris per liter beror på alkoholhalt för varugruppen öl i ett punktdiagram med en rät trendlinje (<code>geom_smooth(method = "lm")</code>).</li>
+<li><a href="https://skatteverket.se/foretag/skatterochavdrag/punktskatter/alkoholskatt/skattesatser.4.4a47257e143e26725aecb5.html">Skattesatsen för öl</a> är 2.02 kronor per liter och volymprocent, bestäm en ny variabel <code>SkattPerLiter</code> som innehåller skattesatsen. Plotta sedan <code>PrisPerLiter - SkattPerLiter</code> mot <code>Alkoholhalt</code> (för varugruppen öl) med trendlinje.</li>
+</ul>
 <hr />
+</div>
 </div>
 </div>
 <div id="v26-utforska-data-med-visualiseringar" class="section level2">
