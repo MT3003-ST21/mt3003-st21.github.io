@@ -481,6 +481,16 @@ ggplot(data = bolaget_subdata,
 <li>Kolumnen <code>Alkoholhalt</code> är kodad som textvariabel eftersom den innehåller ett procenttecken, gör om den till numerisk genom att först ta bort procenttecknet med <code>str_remove</code> och sedan konvertera med <code>as.numeric</code>. Illustrera sedan hur pris per liter beror på alkoholhalt för varugruppen öl i ett punktdiagram med en rät trendlinje (<code>geom_smooth(method = "lm")</code>).</li>
 <li><a href="https://skatteverket.se/foretag/skatterochavdrag/punktskatter/alkoholskatt/skattesatser.4.4a47257e143e26725aecb5.html">Skattesatsen för öl</a> är 2.02 kronor per liter och volymprocent, bestäm en ny variabel <code>SkattPerLiter</code> som innehåller skattesatsen. Plotta sedan <code>PrisPerLiter - SkattPerLiter</code> mot <code>Alkoholhalt</code> (för varugruppen öl) med trendlinje.</li>
 </ul>
+</div>
+<div id="badväder" class="section level4">
+<h4>Badväder</h4>
+<p>Hos Havs och Vattenmyndigheten kan du hitta <a href="https://havbi.havochvatten.se/analytics/saw.dll?PortalPages">statistik över vattenprover</a> tagna vid badplatser runt om i landet, ett utdrag i Excel-format kan laddas ned med</p>
+<pre class="r"><code>download.file(&quot;https://github.com/MT3003-ST21/data/raw/main/Provresultat.xlsx&quot;,
+              &quot;data/Provresultat.xlsx&quot;)</code></pre>
+<p>och läsas in med</p>
+<pre class="r"><code>badvatten &lt;- readxl::read_excel(&quot;data/Provresultat.xlsx&quot;) %&gt;% 
+  fill(Län, Kommun)</code></pre>
+<p>Vad gör funktionen <code>fill</code> i detta fall? Undersök materialet närmare avseende t.ex. skillnader mellan län, EU-bad/Övriga och Badplatstyp. En svårighet är att man för E.coli och enterokocker ibland använder ett mätvärde och ibland en övre gräns.</p>
 <hr />
 </div>
 </div>

@@ -167,7 +167,20 @@ RStudio Primers:
 - [Skattesatsen för öl](https://skatteverket.se/foretag/skatterochavdrag/punktskatter/alkoholskatt/skattesatser.4.4a47257e143e26725aecb5.html) är 2.02 kronor per liter och volymprocent, bestäm en ny variabel `SkattPerLiter` som innehåller skattesatsen. Plotta sedan `PrisPerLiter - SkattPerLiter` mot `Alkoholhalt` (för varugruppen öl) med trendlinje.
 
 
+#### Badväder
 
+Hos Havs och Vattenmyndigheten kan du hitta [statistik över vattenprover](https://havbi.havochvatten.se/analytics/saw.dll?PortalPages) tagna vid badplatser runt om i landet, ett utdrag i Excel-format kan laddas ned med 
+```{r, eval = FALSE, echo = TRUE}
+download.file("https://github.com/MT3003-ST21/data/raw/main/Provresultat.xlsx",
+              "data/Provresultat.xlsx")
+```
+och läsas in med
+```{r, eval = FALSE, echo = TRUE}
+badvatten <- readxl::read_excel("data/Provresultat.xlsx") %>% 
+  fill(Län, Kommun)
+```
+
+Vad gör funktionen `fill` i detta fall? Undersök materialet närmare avseende t.ex. skillnader mellan län, EU-bad/Övriga och Badplatstyp. En svårighet är att man för E.coli och enterokocker ibland använder ett mätvärde och ibland en övre gräns.
 
 ***
 
