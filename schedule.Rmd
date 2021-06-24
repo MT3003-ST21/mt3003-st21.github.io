@@ -136,7 +136,7 @@ gapminder <- read_csv("data/gapminder_2021-06-14.csv")
 - Skapa nya kolumner med `mutate`
 - Sammanställningar med `group_by` och `summarise`
 
-### Kursmaterial (prel.)
+### Kursmaterial
 
 - R4DS: [Kapitel 5-6](https://r4ds.had.co.nz/transform.html).
 
@@ -180,7 +180,7 @@ badvatten <- readxl::read_excel("data/Provresultat.xlsx") %>%
   fill(Län, Kommun)
 ```
 
-Vad gör funktionen `fill` i detta fall? Undersök materialet närmare avseende t.ex. skillnader mellan län, EU-bad/Övriga och Badplatstyp. En svårighet är att man för E.coli och enterokocker ibland använder ett mätvärde och ibland en övre gräns.
+Vad gör funktionen `fill` i detta fall? Undersök materialet närmare avseende t.ex. skillnader mellan län, EU-bad/Övriga och Badplatstyp. En svårighet är att man för E.coli och enterokocker ibland använder ett mätvärde och ibland en övre gräns (se prefix-kolumnerna). 
 
 ***
 
@@ -192,13 +192,17 @@ Vad gör funktionen `fill` i detta fall? Undersök materialet närmare avseende 
 - Utforska data med `ggplot`.
 - Andra laborationen inlämnad (deadline söndag).
 
-### Kursmaterial (prel.)
+### Kursmaterial
 
-- R4DS: [Kapitel 7](https://r4ds.had.co.nz/exploratory-data-analysis.html).
+- R4DS: [Kapitel 7](https://r4ds.had.co.nz/exploratory-data-analysis.html), [Kapitel 27](https://r4ds.had.co.nz/r-markdown.html) och [Kapitel 28](https://r4ds.had.co.nz/graphics-for-communication.html).
 
 RStudio Primers:
 
 - [Visualize Data](https://rstudio.cloud/learn/primers/3)
+
+### Övningar
+
+Inga speciella övningar denna vecka, experimetera med visualiseringar av data från tidigare veckor.
 
 ***
 
@@ -206,7 +210,7 @@ RStudio Primers:
 
 ### Mål denna vecka
 
-- Att läsa data från fil
+- Att läsa data från fil.
 
 ### Kursmaterial (prel.)
 
