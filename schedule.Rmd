@@ -194,7 +194,8 @@ Vad gör funktionen `fill` i detta fall? Undersök materialet närmare avseende 
 
 ### Kursmaterial
 
-- R4DS: [Kapitel 7](https://r4ds.had.co.nz/exploratory-data-analysis.html), [Kapitel 27](https://r4ds.had.co.nz/r-markdown.html) och [Kapitel 28](https://r4ds.had.co.nz/graphics-for-communication.html).
+- R4DS: [Kapitel 7](https://r4ds.had.co.nz/exploratory-data-analysis.html), [Kapitel 27](https://r4ds.had.co.nz/r-markdown.html) och [Kapitel 28](https://r4ds.had.co.nz/graphics-for-communication.html). 
+
 
 RStudio Primers:
 
@@ -204,21 +205,157 @@ RStudio Primers:
 
 Inga speciella övningar denna vecka, experimetera med visualiseringar av data från tidigare veckor.
 
-***
 
 ## **v27**: Läsa data från fil
 
 ### Mål denna vecka
 
-- Att läsa data från fil.
+- Att kunna importera tabeller från textfiler.
 
-### Kursmaterial (prel.)
+### Kursmaterial
 
 - R4DS: [Kapitel 9-11](https://r4ds.had.co.nz/data-import.html).
+
+#### Kapitel 11 från ett svenskt perspektiv
+
+Paketet `readr` följer amerikansk standard om du inte ber det göra något annat, här listar vi några skillnader mellan svensk och amerikansk standard som kan vara bra att ha koll på.
+
+#####  Filformatet `.csv`
+
+`csv` står för *comma separated values* och är ett av de vanligaste formaten för att spara tabeller i en textfil. I en `csv`-fil motsvarar varje rad en rad i tabellen (översta raden består ofta av kolumnrubriker) och kommatecken används för att separera kolumner. Filen med innehåll 
+```
+x, y
+1, 2
+3, 4
+```
+motsvarar alltså tabellen 
+```{r, echo = TRUE}
+readr::read_csv(
+"x, y
+1, 2
+3, 4")
+``` 
+
+Detta fungerar bra i engelskspråkiga länder där man använder punkt som decimaltecken. När man som i svensk standard använder kommatecken som decimaltecken används istället ofta semikolon som kolumnavgränsare. Så är till exempel fallet i Excel; om du har Excel med svenska nationella inställningar och väljer att spara en tabell i formatet `CSV (kommaavgränsad) *.csv` så sparas den i själva verket som en fil där kolumner avgränsas med semikolon. Försöker du sedan läsa in den med `read_csv` placeras alla värden i samma kolumn 
+```{r, echo = TRUE}
+readr::read_csv(
+"x; y
+1; 2
+3; 4")
+```
+Eftersom detta är vanligt förekommande finns en specialfunktion `read_csv2` som utgår ifrån att kolumner skiljs med semikolon och komma används som decimaltecken
+```{r, echo = TRUE}
+readr::read_csv2(
+"x; y
+1; 2
+3; 4")
+```
+
+##### Decimaltecken igen
+
+När siffror kombineras med punkt, kommatecken och mellanslag gissar paketet `readr` vad dessa betyder utifrån amerikansk standard. Här kan det lätt bli fel om vi slarvar med att ange lokala inställningar (`locale`). Jämför till exempel
+```{r, echo = TRUE}
+readr::parse_number(c("3,14", "3 000"))
+```
+med
+```{r, echo = TRUE}
+readr::parse_number(c("3,14", "3 000"), locale = readr::locale(decimal_mark = ",", 
+                                                               grouping_mark = " "))
+```
+
+Ibland får man lösa konverteringen själv. I data som matats in manuellt är det inte ovanligt att både punkt och kommatecken förekommer som decimaltecken om vartannat i samma fil. Då är det säkrare att läsa in alla kolumner som text (`chr`) och använda till exempel `str_replace(x, ",", ".")` följt av `as.numeric`.
+
+##### Spagetti med kÃ¶ttfÃ¤rssÃ¥s
+
+Antagligen har du någon gång stött på en text där svenska tecken bytts ut mot obegripliga symboler. Problemet beror på att det utvecklats många olika konventioner för [teckenkodning](https://sv.wikipedia.org/wiki/Teckenkod) som kan vara specifika för operativsystem och applikationer. De viktigaste att känna till är [UTF-8](https://sv.wikipedia.org/wiki/UTF-8), som är standard på webben och kan koda alla möjliga språk, och [ISO 8859-1](https://sv.wikipedia.org/wiki/ISO/IEC_8859-1) eller **latin1**, som är en enklare teckenkodning anpassad för västeropeiska språk. Paketet `readr` förutsätter alltid UTF-8, medan motsvarande funktioner i Rs `base`-paket (t.ex. `read.csv` som motsvarar `readr::read_csv`) anpassar sig efter lokala systeminställningar.
+
+Ser ditt resutat ut som i rubriken har du antagligen försökt läsa in "köttfärssås" som latin1 när den i själva verket var kodad i UTF-8, detta är mindre vanligt med just `readr`-paketet eftersom det läser in som UTF-8 om du inte anger något annat. Om du däremot försöker läsa in en fil kodad i latin1 med `readr` blir det  `k\xf6ttf\xe4rss\xe5s` om du inte anger `locale = locale(encoding = "latin1")`.
+
+### Övningar
+
+#### SCB-data
+
+I [SCBs statistikdatabas](https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/) kan man skapa en länk (url) till tabeller man tagit fram. Filen på `https://www.statistikdatabasen.scb.se/sq/110431` innehåller medelålder per län i formatet *Kommaavgränsad med rubrik*. Undersök den med `read_lines("https://www.statistikdatabasen.scb.se/sq/110431")` och försök sedan läsa in den med `read_csv`.
+
+#### Mer badvatten
+
+Badvattenfilen som användes i tidigare övningar var exporterad som Excel-fil från [Hav och Vattenmyndigheten](https://havbi.havochvatten.se/analytics/saw.dll?PortalPages), om vi istället väljer att exportera som csv får vi en fil som kan hämtas med
+```{r, eval = FALSE, echo = TRUE}
+download.file("https://github.com/MT3003-ST21/data/raw/main/Provresultat_2021-06-28.csv",
+              "data/Provresultat_2021-06-28.csv")
+```
+
+Försök läsa in den med `read_csv`, vad händer med vattentemperaturen? Fixa!
 
 ***
 
 ## **v28**: Omforma och sammanfläta tabeller
+
+
+### Mål denna vecka
+
+- Att kunna omforma tabeller till ett "tidy"-format.
+- Att kunna skapa nya tabeller genom att sammanfoga flera tabeller med gemensamma kolumner.
+
+### Kursmaterial (prel.)
+
+- R4DS: [Kapitel 12-13](https://r4ds.had.co.nz/tidy-data.html)
+
+RStudio primers:
+
+- [Tidy your data](https://rstudio.cloud/learn/primers/4). **OBS**: I delen *Reshape Data* används funktionerna `gather` och `spread`, dessa har ersatts med `pivot_longer` och `pivot_wider` som är enklare att använda (de gamla fungerar dock fortfarande). Försök lösa övningen med `pivot_longer` och `pivot_wider`.
+
+### Övningar
+
+#### Gapminder data
+
+På [gapminders dataarkiv](https://www.gapminder.org/data/) kan man ladda ner deras sammanställda datamaterial, en fil för varje variabel. Tabellen som använts i tidigare övningar är sammanställd av sådana filer. Filen med antal mobiltelefoner per land och år har vi hämtat så att den kan laddas ned med
+```{r, eval = FALSE, echo = TRUE}
+download.file("https://github.com/MT3003-ST21/data/raw/main/cell_phones_total_2021-06-27.csv",
+              "data/cell_phones_total_2021-06-27.csv")
+```
+och sedan läsas in med 
+```{r, eval = FALSE, echo = TRUE}
+cell_phones_total <- read_csv("data/cell_phones_total_2021-06-27.csv",
+                              col_types = cols(.default = "c"))
+```
+här ser `col_types = cols(.default = "c" )` till att alla kolumner läses in som text (`chr`) vilket kommer visa sig vara praktiskt. Du kan också prova med någon anna variabel du hämtad ned direkt från gapminder.
+
+Uppgiften är nu att lägga till variabeln till gapminder-tabellen från tidigare övningar genom att
+
+- Gör om `cell_phones_total` till "tidy"-format med `pivot_longer`.
+- Lägg till den nya variabeln som en kolumn i gapminder tabellen med lämplig `*_join` (om du gör allt i en pipe-sekvens kan `right_join` vara lämpligt).
+- Anledningen till att vi läste in alla kolumner som text är att gapminder valt att koda numeriska värden i olika enheter. Talet 1100 kodas t.ex. som `1.1k` och 12 600 000 som `12.6M`. Detta kan t.ex. lösas med `case_when` som nedan
+```{r, eval = FALSE, echo = TRUE}
+case_when(
+  str_detect(antal_mobiler, "k") ~ 1000 * (str_remove(antal_mobiler, "k") %>% as.numeric()),
+  str_detect(antal_mobiler, "M") ~ ...
+```
+
+#### Koroplet
+
+Koropletkartor brukar användas när man vill visa hur en variabel varierar geografiskt, ofta med en indelning i områden som t.ex. län eller kommuner. Du kan ladda ner och packa upp en karta över sveriges län i som en så kallad shapefil ([hämtad från SCB](https://www.scb.se/hitta-statistik/regional-statistik-och-kartor/regionala-indelningar/digitala-granser/)) med
+```{r, eval = FALSE, echo = TRUE}
+download.file("https://github.com/MT3003-ST21/data/raw/main/LanSweref99TM.zip",
+              "LanSweref99TM.zip")
+unzip("LanSweref99TM.zip", exdir = "LanSweref99TM")
+```
+Paketet `sf` innehåller funktioner för att arbeta med geografiska data och kan bland annat läsa in en shapefil i tabellformat med `st_read` som sedan kan plottas med `geom_sf`
+```{r, eval = FALSE, echo = TRUE}
+library(sf)
+karta_lan <- st_read("LanSweref99TM/Lan_Sweref99TM_region.shp", quiet = TRUE)
+ggplot(karta_lan, aes(fill = LnNamn)) + geom_sf()
+```
+
+```{r, echo = FALSE, out.width = "50%"}
+knitr::include_graphics("img/lan.png")
+```
+
+
+Objektet `karta_lan` kan användas som en vanlig tabell/`tibble`. Det betyder att vi kan lägga till länsvisa variabler med `*_join` om vi vill färglägga efter något mer intressant än `LnNamn`. Prova tabellen med medelålder från tidigare övningar, en nyckel får du t.ex. genom att skapa en variabel `LnKod = str_sub(region, 1, 2)` i tabellen över medelålder.
+
+Ett alternativ till `ggplot` för just kartframställning är paketet [`tmap`](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html).
+
 
 ***
 

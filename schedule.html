@@ -518,7 +518,6 @@ ggplot(data = bolaget_subdata,
 <div id="övningar-2" class="section level3">
 <h3>Övningar</h3>
 <p>Inga speciella övningar denna vecka, experimetera med visualiseringar av data från tidigare veckor.</p>
-<hr />
 </div>
 </div>
 <div id="v27-läsa-data-från-fil" class="section level2">
@@ -526,20 +525,144 @@ ggplot(data = bolaget_subdata,
 <div id="mål-denna-vecka-4" class="section level3">
 <h3>Mål denna vecka</h3>
 <ul>
-<li>Att läsa data från fil.</li>
+<li>Att kunna importera tabeller från textfiler.</li>
+</ul>
+</div>
+<div id="kursmaterial-4" class="section level3">
+<h3>Kursmaterial</h3>
+<ul>
+<li>R4DS: <a href="https://r4ds.had.co.nz/data-import.html">Kapitel 9-11</a>.</li>
+</ul>
+<div id="kapitel-11-från-ett-svenskt-perspektiv" class="section level4">
+<h4>Kapitel 11 från ett svenskt perspektiv</h4>
+<p>Paketet <code>readr</code> följer amerikansk standard om du inte ber det göra något annat, här listar vi några skillnader mellan svensk och amerikansk standard som kan vara bra att ha koll på.</p>
+<div id="filformatet-.csv" class="section level5">
+<h5>Filformatet <code>.csv</code></h5>
+<p><code>csv</code> står för <em>comma separated values</em> och är ett av de vanligaste formaten för att spara tabeller i en textfil. I en <code>csv</code>-fil motsvarar varje rad en rad i tabellen (översta raden består ofta av kolumnrubriker) och kommatecken används för att separera kolumner. Filen med innehåll</p>
+<pre><code>x, y
+1, 2
+3, 4</code></pre>
+<p>motsvarar alltså tabellen</p>
+<pre class="r"><code>readr::read_csv(
+&quot;x, y
+1, 2
+3, 4&quot;)</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##       x     y
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1     1     2
+## 2     3     4</code></pre>
+<p>Detta fungerar bra i engelskspråkiga länder där man använder punkt som decimaltecken. När man som i svensk standard använder kommatecken som decimaltecken används istället ofta semikolon som kolumnavgränsare. Så är till exempel fallet i Excel; om du har Excel med svenska nationella inställningar och väljer att spara en tabell i formatet <code>CSV (kommaavgränsad) *.csv</code> så sparas den i själva verket som en fil där kolumner avgränsas med semikolon. Försöker du sedan läsa in den med <code>read_csv</code> placeras alla värden i samma kolumn</p>
+<pre class="r"><code>readr::read_csv(
+&quot;x; y
+1; 2
+3; 4&quot;)</code></pre>
+<pre><code>## # A tibble: 2 x 1
+##   `x; y`
+##   &lt;chr&gt; 
+## 1 1; 2  
+## 2 3; 4</code></pre>
+<p>Eftersom detta är vanligt förekommande finns en specialfunktion <code>read_csv2</code> som utgår ifrån att kolumner skiljs med semikolon och komma används som decimaltecken</p>
+<pre class="r"><code>readr::read_csv2(
+&quot;x; y
+1; 2
+3; 4&quot;)</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##       x     y
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1     1     2
+## 2     3     4</code></pre>
+</div>
+<div id="decimaltecken-igen" class="section level5">
+<h5>Decimaltecken igen</h5>
+<p>När siffror kombineras med punkt, kommatecken och mellanslag gissar paketet <code>readr</code> vad dessa betyder utifrån amerikansk standard. Här kan det lätt bli fel om vi slarvar med att ange lokala inställningar (<code>locale</code>). Jämför till exempel</p>
+<pre class="r"><code>readr::parse_number(c(&quot;3,14&quot;, &quot;3 000&quot;))</code></pre>
+<pre><code>## [1] 314   3</code></pre>
+<p>med</p>
+<pre class="r"><code>readr::parse_number(c(&quot;3,14&quot;, &quot;3 000&quot;), locale = readr::locale(decimal_mark = &quot;,&quot;, 
+                                                               grouping_mark = &quot; &quot;))</code></pre>
+<pre><code>## [1]    3.14 3000.00</code></pre>
+<p>Ibland får man lösa konverteringen själv. I data som matats in manuellt är det inte ovanligt att både punkt och kommatecken förekommer som decimaltecken om vartannat i samma fil. Då är det säkrare att läsa in alla kolumner som text (<code>chr</code>) och använda till exempel <code>str_replace(x, ",", ".")</code> följt av <code>as.numeric</code>.</p>
+</div>
+<div id="spagetti-med-kãttfãrssãs" class="section level5">
+<h5>Spagetti med kÃ¶ttfÃ¤rssÃ¥s</h5>
+<p>Antagligen har du någon gång stött på en text där svenska tecken bytts ut mot obegripliga symboler. Problemet beror på att det utvecklats många olika konventioner för <a href="https://sv.wikipedia.org/wiki/Teckenkod">teckenkodning</a> som kan vara specifika för operativsystem och applikationer. De viktigaste att känna till är <a href="https://sv.wikipedia.org/wiki/UTF-8">UTF-8</a>, som är standard på webben och kan koda alla möjliga språk, och <a href="https://sv.wikipedia.org/wiki/ISO/IEC_8859-1">ISO 8859-1</a> eller <strong>latin1</strong>, som är en enklare teckenkodning anpassad för västeropeiska språk. Paketet <code>readr</code> förutsätter alltid UTF-8, medan motsvarande funktioner i Rs <code>base</code>-paket (t.ex. <code>read.csv</code> som motsvarar <code>readr::read_csv</code>) anpassar sig efter lokala systeminställningar.</p>
+<p>Ser ditt resutat ut som i rubriken har du antagligen försökt läsa in “köttfärssås” som latin1 när den i själva verket var kodad i UTF-8, detta är mindre vanligt med just <code>readr</code>-paketet eftersom det läser in som UTF-8 om du inte anger något annat. Om du däremot försöker läsa in en fil kodad i latin1 med <code>readr</code> blir det <code>k\xf6ttf\xe4rss\xe5s</code> om du inte anger <code>locale = locale(encoding = "latin1")</code>.</p>
+</div>
+</div>
+</div>
+<div id="övningar-3" class="section level3">
+<h3>Övningar</h3>
+<div id="scb-data" class="section level4">
+<h4>SCB-data</h4>
+<p>I <a href="https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/">SCBs statistikdatabas</a> kan man skapa en länk (url) till tabeller man tagit fram. Filen på <code>https://www.statistikdatabasen.scb.se/sq/110431</code> innehåller medelålder per län i formatet <em>Kommaavgränsad med rubrik</em>. Undersök den med <code>read_lines("https://www.statistikdatabasen.scb.se/sq/110431")</code> och försök sedan läsa in den med <code>read_csv</code>.</p>
+</div>
+<div id="mer-badvatten" class="section level4">
+<h4>Mer badvatten</h4>
+<p>Badvattenfilen som användes i tidigare övningar var exporterad som Excel-fil från <a href="https://havbi.havochvatten.se/analytics/saw.dll?PortalPages">Hav och Vattenmyndigheten</a>, om vi istället väljer att exportera som csv får vi en fil som kan hämtas med</p>
+<pre class="r"><code>download.file(&quot;https://github.com/MT3003-ST21/data/raw/main/Provresultat_2021-06-28.csv&quot;,
+              &quot;data/Provresultat_2021-06-28.csv&quot;)</code></pre>
+<p>Försök läsa in den med <code>read_csv</code>, vad händer med vattentemperaturen? Fixa!</p>
+<hr />
+</div>
+</div>
+</div>
+<div id="v28-omforma-och-sammanfläta-tabeller" class="section level2">
+<h2><strong>v28</strong>: Omforma och sammanfläta tabeller</h2>
+<div id="mål-denna-vecka-5" class="section level3">
+<h3>Mål denna vecka</h3>
+<ul>
+<li>Att kunna omforma tabeller till ett “tidy”-format.</li>
+<li>Att kunna skapa nya tabeller genom att sammanfoga flera tabeller med gemensamma kolumner.</li>
 </ul>
 </div>
 <div id="kursmaterial-prel." class="section level3">
 <h3>Kursmaterial (prel.)</h3>
 <ul>
-<li>R4DS: <a href="https://r4ds.had.co.nz/data-import.html">Kapitel 9-11</a>.</li>
+<li>R4DS: <a href="https://r4ds.had.co.nz/tidy-data.html">Kapitel 12-13</a></li>
 </ul>
+<p>RStudio primers:</p>
+<ul>
+<li><a href="https://rstudio.cloud/learn/primers/4">Tidy your data</a>. <strong>OBS</strong>: I delen <em>Reshape Data</em> används funktionerna <code>gather</code> och <code>spread</code>, dessa har ersatts med <code>pivot_longer</code> och <code>pivot_wider</code> som är enklare att använda (de gamla fungerar dock fortfarande). Försök lösa övningen med <code>pivot_longer</code> och <code>pivot_wider</code>.</li>
+</ul>
+</div>
+<div id="övningar-4" class="section level3">
+<h3>Övningar</h3>
+<div id="gapminder-data-2" class="section level4">
+<h4>Gapminder data</h4>
+<p>På <a href="https://www.gapminder.org/data/">gapminders dataarkiv</a> kan man ladda ner deras sammanställda datamaterial, en fil för varje variabel. Tabellen som använts i tidigare övningar är sammanställd av sådana filer. Filen med antal mobiltelefoner per land och år har vi hämtat så att den kan laddas ned med</p>
+<pre class="r"><code>download.file(&quot;https://github.com/MT3003-ST21/data/raw/main/cell_phones_total_2021-06-27.csv&quot;,
+              &quot;data/cell_phones_total_2021-06-27.csv&quot;)</code></pre>
+<p>och sedan läsas in med</p>
+<pre class="r"><code>cell_phones_total &lt;- read_csv(&quot;data/cell_phones_total_2021-06-27.csv&quot;,
+                              col_types = cols(.default = &quot;c&quot;))</code></pre>
+<p>här ser <code>col_types = cols(.default = "c" )</code> till att alla kolumner läses in som text (<code>chr</code>) vilket kommer visa sig vara praktiskt. Du kan också prova med någon anna variabel du hämtad ned direkt från gapminder.</p>
+<p>Uppgiften är nu att lägga till variabeln till gapminder-tabellen från tidigare övningar genom att</p>
+<ul>
+<li>Gör om <code>cell_phones_total</code> till “tidy”-format med <code>pivot_longer</code>.</li>
+<li>Lägg till den nya variabeln som en kolumn i gapminder tabellen med lämplig <code>*_join</code> (om du gör allt i en pipe-sekvens kan <code>right_join</code> vara lämpligt).</li>
+<li>Anledningen till att vi läste in alla kolumner som text är att gapminder valt att koda numeriska värden i olika enheter. Talet 1100 kodas t.ex. som <code>1.1k</code> och 12 600 000 som <code>12.6M</code>. Detta kan t.ex. lösas med <code>case_when</code> som nedan</li>
+</ul>
+<pre class="r"><code>case_when(
+  str_detect(antal_mobiler, &quot;k&quot;) ~ 1000 * (str_remove(antal_mobiler, &quot;k&quot;) %&gt;% as.numeric()),
+  str_detect(antal_mobiler, &quot;M&quot;) ~ ...</code></pre>
+</div>
+<div id="koroplet" class="section level4">
+<h4>Koroplet</h4>
+<p>Koropletkartor brukar användas när man vill visa hur en variabel varierar geografiskt, ofta med en indelning i områden som t.ex. län eller kommuner. Du kan ladda ner och packa upp en karta över sveriges län i som en så kallad shapefil (<a href="https://www.scb.se/hitta-statistik/regional-statistik-och-kartor/regionala-indelningar/digitala-granser/">hämtad från SCB</a>) med</p>
+<pre class="r"><code>download.file(&quot;https://github.com/MT3003-ST21/data/raw/main/LanSweref99TM.zip&quot;,
+              &quot;LanSweref99TM.zip&quot;)
+unzip(&quot;LanSweref99TM.zip&quot;, exdir = &quot;LanSweref99TM&quot;)</code></pre>
+<p>Paketet <code>sf</code> innehåller funktioner för att arbeta med geografiska data och kan bland annat läsa in en shapefil i tabellformat med <code>st_read</code> som sedan kan plottas med <code>geom_sf</code></p>
+<pre class="r"><code>library(sf)
+karta_lan &lt;- st_read(&quot;LanSweref99TM/Lan_Sweref99TM_region.shp&quot;, quiet = TRUE)
+ggplot(karta_lan, aes(fill = LnNamn)) + geom_sf()</code></pre>
+<p><img src="img/lan.png" width="50%" /></p>
+<p>Objektet <code>karta_lan</code> kan användas som en vanlig tabell/<code>tibble</code>. Det betyder att vi kan lägga till länsvisa variabler med <code>*_join</code> om vi vill färglägga efter något mer intressant än <code>LnNamn</code>. Prova tabellen med medelålder från tidigare övningar, en nyckel får du t.ex. genom att skapa en variabel <code>LnKod = str_sub(region, 1, 2)</code> i tabellen över medelålder.</p>
+<p>Ett alternativ till <code>ggplot</code> för just kartframställning är paketet <a href="https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html"><code>tmap</code></a>.</p>
 <hr />
 </div>
 </div>
-<div id="v28-omforma-och-sammanfläta-tabeller" class="section level2">
-<h2><strong>v28</strong>: Omforma och sammanfläta tabeller</h2>
-<hr />
 </div>
 <div id="v29-arbeta-med-text" class="section level2">
 <h2><strong>v29</strong>: Arbeta med text</h2>
