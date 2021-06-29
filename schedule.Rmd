@@ -354,7 +354,7 @@ knitr::include_graphics("https://raw.githubusercontent.com/MT3003-ST21/mt3003-st
 
 Objektet `karta_lan` kan användas som en vanlig tabell/`tibble`. Det betyder att vi kan lägga till länsvisa variabler med `*_join` om vi vill färglägga efter något mer intressant än `LnNamn`. Prova tabellen med medelålder från tidigare övningar, en nyckel får du t.ex. genom att skapa en variabel `LnKod = str_sub(region, 1, 2)` i tabellen över medelålder.
 
-Ett alternativ till `ggplot` för just kartframställning är paketet [`tmap`](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html), som kan vara enklare att använda men mindre felxibelt.
+Ett alternativ till `ggplot` för just kartframställning är paketet [`tmap`](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html) som kan vara enklare att använda men mindre flexibelt.
 
 
 ***

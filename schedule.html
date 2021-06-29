@@ -659,7 +659,7 @@ karta_lan &lt;- st_read(&quot;LanSweref99TM/Lan_Sweref99TM_region.shp&quot;, qui
 ggplot(karta_lan, aes(fill = LnNamn)) + geom_sf()</code></pre>
 <p><img src="https://raw.githubusercontent.com/MT3003-ST21/mt3003-st21.github.io/main/img/lan.png" width="50%" /></p>
 <p>Objektet <code>karta_lan</code> kan användas som en vanlig tabell/<code>tibble</code>. Det betyder att vi kan lägga till länsvisa variabler med <code>*_join</code> om vi vill färglägga efter något mer intressant än <code>LnNamn</code>. Prova tabellen med medelålder från tidigare övningar, en nyckel får du t.ex. genom att skapa en variabel <code>LnKod = str_sub(region, 1, 2)</code> i tabellen över medelålder.</p>
-<p>Ett alternativ till <code>ggplot</code> för just kartframställning är paketet <a href="https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html"><code>tmap</code></a>, som kan vara enklare att använda men mindre felxibelt.</p>
+<p>Ett alternativ till <code>ggplot</code> för just kartframställning är paketet <a href="https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html"><code>tmap</code></a> som kan vara enklare att använda men mindre flexibelt.</p>
 <hr />
 </div>
 </div>
