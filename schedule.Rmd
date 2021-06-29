@@ -348,7 +348,7 @@ ggplot(karta_lan, aes(fill = LnNamn)) + geom_sf()
 ```
 
 ```{r, echo = FALSE, out.width = "50%"}
-knitr::include_graphics("img/lan.png")
+knitr::include_graphics("https://raw.githubusercontent.com/MT3003-ST21/mt3003-st21.github.io/main/img/lan.png")
 ```
 
 
