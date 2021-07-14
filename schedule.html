@@ -326,6 +326,9 @@ div.tocify {
 <li>
   <a href="lab.html">Laborationer</a>
 </li>
+<li>
+  <a href="project.html">Projekt</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -616,8 +619,8 @@ ggplot(data = bolaget_subdata,
 <li>Att kunna skapa nya tabeller genom att sammanfoga flera tabeller med gemensamma kolumner.</li>
 </ul>
 </div>
-<div id="kursmaterial-prel." class="section level3">
-<h3>Kursmaterial (prel.)</h3>
+<div id="kursmaterial-5" class="section level3">
+<h3>Kursmaterial</h3>
 <ul>
 <li>R4DS: <a href="https://r4ds.had.co.nz/tidy-data.html">Kapitel 12-13</a></li>
 </ul>
@@ -647,6 +650,28 @@ ggplot(data = bolaget_subdata,
   str_detect(antal_mobiler, &quot;k&quot;) ~ 1000 * (str_remove(antal_mobiler, &quot;k&quot;) %&gt;% as.numeric()),
   str_detect(antal_mobiler, &quot;M&quot;) ~ ...</code></pre>
 </div>
+<div id="jämställdhet" class="section level4">
+<h4>Jämställdhet</h4>
+<p>Tabellen</p>
+<pre class="r"><code>read_csv(&quot;https://www.statistikdatabasen.scb.se/sq/110673&quot;, 
+         skip = 1, locale = locale(encoding = &quot;latin1&quot;))</code></pre>
+<pre><code>## # A tibble: 2 x 8
+##   kön     `1995` `1999` `2004` `2009` `2011` `2014` `2019`
+##   &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 kvinnor      9      9     11     10      9     11     11
+## 2 män         13     13      8      8     11      9      9</code></pre>
+<p>innehåller antal svenska EU-parlamentariker efter kön och år. Använd <code>pivot_longer</code>, <code>pivot_wider</code>, <code>mutate</code> och <code>select</code> i en följd för att generera</p>
+<pre><code>## # A tibble: 7 x 2
+##   year  percent_female
+##   &lt;chr&gt;          &lt;dbl&gt;
+## 1 1995            40.9
+## 2 1999            40.9
+## 3 2004            57.9
+## 4 2009            55.6
+## 5 2011            45  
+## 6 2014            55  
+## 7 2019            55</code></pre>
+</div>
 <div id="koroplet" class="section level4">
 <h4>Koroplet</h4>
 <p>Koropletkartor brukar användas när man vill visa hur en variabel varierar geografiskt, ofta med en indelning i områden som t.ex. län eller kommuner. Du kan ladda ner och packa upp en karta över sveriges län i som en så kallad shapefil (<a href="https://www.scb.se/hitta-statistik/regional-statistik-och-kartor/regionala-indelningar/digitala-granser/">hämtad från SCB</a>) med</p>
@@ -664,13 +689,115 @@ ggplot(karta_lan, aes(fill = LnNamn)) + geom_sf()</code></pre>
 </div>
 </div>
 </div>
-<div id="v29-arbeta-med-text" class="section level2">
-<h2><strong>v29</strong>: Arbeta med text</h2>
+<div id="v29-arbeta-med-text-faktorer-och-datum." class="section level2">
+<h2><strong>v29</strong>: Arbeta med text, faktorer och datum.</h2>
+<div id="mål-denna-vecka-6" class="section level3">
+<h3>Mål denna vecka</h3>
+<ul>
+<li>Att kunna använda verktyg i paketen <code>stringr</code>, <code>forcats</code> och <code>lubridate</code>.</li>
+</ul>
+</div>
+<div id="kursmaterial-6" class="section level3">
+<h3>Kursmaterial</h3>
+<ul>
+<li>R4DS: <a href="https://r4ds.had.co.nz/strings.html">Kapitel 14-16</a> (14.3 om reguljära uttryck kan läsas kursivt, ni förväntas ha en grundläggande förståelse för konceptet men inte detaljerna).</li>
+</ul>
+</div>
+<div id="övningar-5" class="section level3">
+<h3>Övningar</h3>
+<p>Kapitel 14-16 innehåller specifika verktyg för att arbeta med text, faktorer och datum. Vi har redan stött på flera av dessa, t.ex. förekom <code>stringr::str_detect</code>, <code>forcats::fct_relevel</code> och <code>lubridate::yday</code> i Laboration 2. Funktionerna i <code>stringr</code> och <code>forcats</code> börjar alltid med <code>str_</code> respective <code>fct_</code> vilket gör det enkelt att leta efter dem i RStudios Console-fönster då man får upp en lista genom att inleda raden med dessa tecken (skriv <code>lubridate::</code> för motsvarande lista för detta paket). Specifika övningar ges i kursboken, här ger vi ett exempel på hur man kan arbeta med textdata.</p>
+<div id="en-textanalys" class="section level4">
+<h4>En textanalys</h4>
+<p>På <a href="https://www.gutenberg.org/">Projekt Gutenberg</a> finns en stor samling gratis e-böcker. Vi kan ladda ner Strindbergs Hemsöborna med</p>
+<pre class="r"><code>download.file(&quot;https://www.gutenberg.org/cache/epub/30078/pg30078.txt&quot;,
+              &quot;data/hemsoborna.txt&quot;)</code></pre>
+<p>läsa ett valt stycke med</p>
+<pre class="r"><code>read_lines(&quot;data/hemsoborna.txt&quot;, skip = 194, n_max = 21) %&gt;% 
+  str_c(collapse = &quot; &quot;)</code></pre>
+<pre><code>## [1] &quot;Han kom som ett yrväder en aprilafton och hade ett höganäskrus i en  svångrem om halsen. Clara och Lotten voro inne med sköt-ekan att hämta  honom på Dalarö brygga; men det dröjde evigheter, innan de kommo i båt.  De skulle till handelsman och ha en tunna tjära och på abeteket och hämta  gråsalva åt grisen, och så skulle de på posten och få ett frimärke, och  så skulle de ner till Fia Lövström i Kroken och låna tuppen mot ett  halvpund småtärna till notbygget, och sist hade de hamnat på  gästgivaregården, där Carlsson bjudit på kaffe med dopp. Och så kommo de  äntligen i båt, men Carlsson ville styra, och det kunde han inte, för han  hade aldrig sett en råseglare förr, och därför skrek han, att de skulle  hissa focken, som inte fanns.&quot;</code></pre>
+<p>och spara hela boken i en tibble med</p>
+<pre class="r"><code>hemsoborna &lt;- tibble(row = read_lines(&quot;data/hemsoborna.txt&quot;, 
+                                       skip = 90, n_max = 10178)) %&gt;% 
+  filter(row != &quot;&quot;) %&gt;% 
+  mutate(row_no = 1:n())
+hemsoborna</code></pre>
+<pre><code>## # A tibble: 4,021 x 2
+##    row                               row_no
+##    &lt;chr&gt;                              &lt;int&gt;
+##  1 HEMSÖBORNA                             1
+##  2 AV                                     2
+##  3 AUGUST STRINDBERG                      3
+##  4 STOCKHOLM                              4
+##  5 ALBERT BONNIERS FÖRLAG                 5
+##  6 _Copyright. Albert Bonnier 1914._      6
+##  7 STOCKHOLM                              7
+##  8 ALB. BONNIERS BOKTRYCKERI 1914         8
+##  9 HEMSÖBORNA                             9
+## 10 SKÄRGÅRDSBERÄTTELSE                   10
+## # ... with 4,011 more rows</code></pre>
+<p>här har vi klippt bort text som inte hör till boken med <code>skip</code> och <code>n_max</code>, tagit bort tomma rader och lagt till radnummer. För att analysera texten vidare delar vi upp den ord för ord, konverterar bokstäver till gemener och lägger in en räknare för kapitel</p>
+<pre class="r"><code>hemsoborna_words &lt;- hemsoborna %&gt;% 
+  mutate(word = str_extract_all(row, boundary(&quot;word&quot;))) %&gt;% 
+  group_by(row_no) %&gt;% 
+  summarise(word = unlist(word)) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(word = str_to_lower(word),
+         chapter = cumsum(str_detect(word, &quot;kapitlet&quot;)))</code></pre>
+<ul>
+<li>Vad gör egentligen <code>chapter = cumsum(str_detect(word, "kapitlet"))</code>?</li>
+</ul>
+<p>Vi kan nu få de vanligaste orden med</p>
+<pre class="r"><code>hemsoborna_words %&gt;% count(word, sort = TRUE)</code></pre>
+<pre><code>## # A tibble: 8,481 x 2
+##    word      n
+##    &lt;chr&gt; &lt;int&gt;
+##  1 och    2457
+##  2 i      1053
+##  3 han     940
+##  4 att     875
+##  5 på      851
+##  6 som     811
+##  7 det     797
+##  8 en      756
+##  9 med     571
+## 10 sig     509
+## # ... with 8,471 more rows</code></pre>
+<p>de flesta av dessa är så kallade stoppord, ord som är viktiga för att binda ihop texten men annars betydelsefattiga. För att ta bort dem hämtar vi en lista på svenska stoppord</p>
+<pre class="r"><code>stopwords &lt;- read_table(&quot;https://raw.githubusercontent.com/stopwords-iso/stopwords-sv/master/stopwords-sv.txt&quot;,
+           col_names = &quot;word&quot;)</code></pre>
+<ul>
+<li>Använd <code>anti_join</code> för att ta bort alla stoppord från listan på de vanligaste orden.</li>
+<li>Illustrera resultatet med funktionen <code>wordcloud2::wordcloud2</code>.</li>
+</ul>
+<p>Stämningsanalys (semtiment analysis) är en populär metod för att beskriva känslostämningar i texter (se till exempel <a href="https://juliasilge.com/blog/if-i-loved-nlp-less/">Jane Austen</a> och <a href="http://varianceexplained.org/r/trump-tweets/">Donald Trump</a>). I allmänhet bygger det på att man anväder ett lexikon som kvantifierar stämningen i enskilda ord, till exempel associerar ett posotivt numeriskt värde till “kärlek” och ett negativt till “svartsjuka”. Ett svenskt sådant lexikon kan laddas ned från <a href="https://spraakbanken.gu.se/">språkbanken</a> som</p>
+<pre class="r"><code>sentiment_lex &lt;- read_csv(&quot;https://svn.spraakdata.gu.se/sb-arkiv/pub/lmf/sentimentlex/sentimentlex.csv&quot;)</code></pre>
+<ul>
+<li>Koppla ihop <code>hemsoborna_words</code> och <code>sentiment_lex</code> med en <code>inner_join</code> och illustrera hur det går utför för Carlsson genom att bestämma medelvärdet av känslostämningen (variabeln <code>strength</code>) för varje kapitel.</li>
+</ul>
 <hr />
+</div>
+</div>
 </div>
 <div id="v30-funktioner-och-iteration" class="section level2">
 <h2><strong>v30</strong>: Funktioner och iteration</h2>
+<div id="mål-denna-vecka-7" class="section level3">
+<h3>Mål denna vecka</h3>
+<ul>
+<li>Att kunna skriva enkla funktioner för att göra koden mer lättläst och enklare att underhålla.</li>
+<li>Att kunna arbeta med Rs list-format.</li>
+<li>Att kunna förenkla upprepade uppgifter med iteration.</li>
+</ul>
+</div>
+<div id="kursmaterial-7" class="section level3">
+<h3>Kursmaterial</h3>
+<ul>
+<li>R4DS: <a href="https://r4ds.had.co.nz/program-intro.html">Kapitel 17-21</a></li>
+</ul>
+</div>
+<div id="övningar-6" class="section level3">
+<h3>Övningar</h3>
 <hr />
+</div>
 </div>
 <div id="v31-apier-databaser-och-webbskrap" class="section level2">
 <h2><strong>v31</strong>: APIer, databaser och webbskrap</h2>

@@ -9,6 +9,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+library(tidyverse)
 ```
 
 ## **v23**: Introduktion till kursverktyg
@@ -297,7 +298,7 @@ Försök läsa in den med `read_csv`, vad händer med vattentemperaturen? Fixa!
 - Att kunna omforma tabeller till ett "tidy"-format.
 - Att kunna skapa nya tabeller genom att sammanfoga flera tabeller med gemensamma kolumner.
 
-### Kursmaterial (prel.)
+### Kursmaterial
 
 - R4DS: [Kapitel 12-13](https://r4ds.had.co.nz/tidy-data.html)
 
@@ -332,6 +333,27 @@ case_when(
   str_detect(antal_mobiler, "M") ~ ...
 ```
 
+#### Jämställdhet
+
+Tabellen
+
+```{r, echo = TRUE}
+read_csv("https://www.statistikdatabasen.scb.se/sq/110673", 
+         skip = 1, locale = locale(encoding = "latin1"))
+```
+
+innehåller antal svenska EU-parlamentariker efter kön och år. Använd `pivot_longer`, `pivot_wider`, `mutate` och `select` i en följd för att generera
+
+```{r, echo = FALSE}
+read_csv("https://www.statistikdatabasen.scb.se/sq/110673", 
+         skip = 1, locale = locale(encoding = "latin1")) %>% 
+  pivot_longer(-kön, names_to = "year") %>% 
+  pivot_wider(-kön, names_from = "kön") %>% 
+  mutate(percent_female = kvinnor / (män + kvinnor) * 100) %>% 
+  select(year, percent_female)
+```
+
+
 #### Koroplet
 
 Koropletkartor brukar användas när man vill visa hur en variabel varierar geografiskt, ofta med en indelning i områden som t.ex. län eller kommuner. Du kan ladda ner och packa upp en karta över sveriges län i som en så kallad shapefil ([hämtad från SCB](https://www.scb.se/hitta-statistik/regional-statistik-och-kartor/regionala-indelningar/digitala-granser/)) med
@@ -359,11 +381,98 @@ Ett alternativ till `ggplot` för just kartframställning är paketet [`tmap`](h
 
 ***
 
-## **v29**: Arbeta med text
+## **v29**: Arbeta med text, faktorer och datum.
+
+### Mål denna vecka
+
+- Att kunna använda verktyg i paketen `stringr`, `forcats` och `lubridate`.
+
+### Kursmaterial
+
+
+- R4DS: [Kapitel 14-16](https://r4ds.had.co.nz/strings.html) (14.3 om reguljära uttryck kan läsas kursivt, ni förväntas ha en grundläggande förståelse för konceptet men inte detaljerna).
+
+### Övningar
+
+Kapitel 14-16 innehåller specifika verktyg för att arbeta med text, faktorer och datum. Vi har redan stött på flera av dessa, t.ex. förekom `stringr::str_detect`, `forcats::fct_relevel` och `lubridate::yday` i Laboration 2. Funktionerna i `stringr` och `forcats` börjar alltid med `str_` respective `fct_` vilket gör det enkelt att leta efter dem i RStudios Console-fönster då man får upp en lista genom att inleda raden med dessa tecken (skriv `lubridate::` för motsvarande lista för detta paket). Specifika övningar ges i kursboken, här ger vi ett exempel på hur man kan arbeta med textdata.
+
+#### En textanalys
+
+På [Projekt Gutenberg](https://www.gutenberg.org/) finns en stor samling gratis e-böcker. Vi kan ladda ner Strindbergs Hemsöborna med
+
+```{r, echo = TRUE}
+download.file("https://www.gutenberg.org/cache/epub/30078/pg30078.txt",
+              "data/hemsoborna.txt")
+```
+läsa ett valt stycke med
+
+```{r, echo = TRUE}
+read_lines("data/hemsoborna.txt", skip = 194, n_max = 21) %>% 
+  str_c(collapse = " ")
+```
+
+och spara hela boken i en tibble med
+
+```{r, echo = TRUE}
+hemsoborna <- tibble(row = read_lines("data/hemsoborna.txt", 
+                                       skip = 90, n_max = 10178)) %>% 
+  filter(row != "") %>% 
+  mutate(row_no = 1:n())
+hemsoborna
+```
+
+här har vi klippt bort text som inte hör till boken med `skip` och `n_max`, tagit bort tomma rader och lagt till radnummer. För att analysera texten vidare delar vi upp den ord för ord, konverterar bokstäver till gemener och lägger in en räknare för kapitel
+
+```{r, echo = TRUE}
+hemsoborna_words <- hemsoborna %>% 
+  mutate(word = str_extract_all(row, boundary("word"))) %>% 
+  group_by(row_no) %>% 
+  summarise(word = unlist(word)) %>% 
+  ungroup() %>% 
+  mutate(word = str_to_lower(word),
+         chapter = cumsum(str_detect(word, "kapitlet")))
+```
+
+- Vad gör egentligen `chapter = cumsum(str_detect(word, "kapitlet"))`?
+
+Vi kan nu få de vanligaste orden med 
+```{r, echo = TRUE}
+hemsoborna_words %>% count(word, sort = TRUE)
+```
+de flesta av dessa är så kallade stoppord, ord som är viktiga för att binda ihop texten men annars betydelsefattiga. För att ta bort dem hämtar vi en lista på svenska stoppord
+```{r, echo = TRUE}
+stopwords <- read_table("https://raw.githubusercontent.com/stopwords-iso/stopwords-sv/master/stopwords-sv.txt",
+           col_names = "word")
+```
+
+- Använd `anti_join` för att ta bort alla stoppord från listan på de vanligaste orden.
+- Illustrera resultatet med funktionen `wordcloud2::wordcloud2`.
+
+Stämningsanalys (semtiment analysis) är en populär metod för att beskriva känslostämningar i texter (se till exempel [Jane Austen](https://juliasilge.com/blog/if-i-loved-nlp-less/) och [Donald Trump](http://varianceexplained.org/r/trump-tweets/)). I allmänhet bygger det på att man anväder ett lexikon som kvantifierar stämningen i enskilda ord, till exempel associerar ett posotivt numeriskt värde till "kärlek" och ett negativt till "svartsjuka". Ett svenskt sådant lexikon kan laddas ned från [språkbanken](https://spraakbanken.gu.se/) som
+```{r, echo = TRUE}
+sentiment_lex <- read_csv("https://svn.spraakdata.gu.se/sb-arkiv/pub/lmf/sentimentlex/sentimentlex.csv")
+```
+
+- Koppla ihop `hemsoborna_words` och `sentiment_lex` med en `inner_join` och illustrera hur det går utför för Carlsson genom att bestämma medelvärdet av känslostämningen (variabeln `strength`) för varje kapitel.
+
 
 ***
 
 ## **v30**: Funktioner och iteration
+
+### Mål denna vecka
+
+- Att kunna skriva enkla funktioner för att göra koden mer lättläst och enklare att underhålla.
+- Att kunna arbeta med Rs list-format.
+- Att kunna förenkla upprepade uppgifter med iteration.
+
+### Kursmaterial
+
+
+- R4DS: [Kapitel 17-21](https://r4ds.had.co.nz/program-intro.html) 
+
+### Övningar
+
 
 ***
 
