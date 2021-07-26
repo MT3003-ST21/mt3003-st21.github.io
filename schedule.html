@@ -796,12 +796,130 @@ hemsoborna</code></pre>
 </div>
 <div id="övningar-6" class="section level3">
 <h3>Övningar</h3>
+<div id="booli-figurer" class="section level4">
+<h4>Booli figurer</h4>
+<p>Koden bakom en figur skapad med <code>ggplot</code> kan bli många rader om man vill finjustera detaljer. Skall man upprepa en figur för olika parametervärden är det därför praktiskt att skriva en funktion. Använd tabellen över alla försäljningar i innerstaden som laddas ned med</p>
+<pre class="r"><code>download.file(&quot;https://github.com/MT3003-ST21/data/raw/main/booli_innerstad_2021-07-02.csv&quot;,
+              &quot;data/booli_innerstad_2021-07-02.csv&quot;)
+booli_data &lt;- read_csv(&quot;data/booli_innerstad_2021-07-02.csv&quot;)</code></pre>
+<ul>
+<li>Konstruera en funktion</li>
+</ul>
+<pre class="r"><code>plot_price_ts &lt;- function(data, title = &quot;Pris per kvadratmeter i Stockholms innerstad&quot;){
+  ...
+}</code></pre>
+<p>som skapar en figur motsvarande den i Laboration 1 baserat på givet <code>data</code>.</p>
+<ul>
+<li>Vill vi nu plotta t.ex. tvåor kan vi använda funktionen med anropet <code>booli_data %&gt;% filter(rooms == 2) %&gt;% plot_price_ts()</code>. Lägg till ett argument <code>rooms</code> till funktionen så att <code>plot_price_ts(booli_data, rooms = 2)</code> ger samma resultat.</li>
+</ul>
+</div>
+<div id="olympiska-medaljer" class="section level4">
+<h4>Olympiska medaljer</h4>
+<p>På <a href="https://sv.wikipedia.org/wiki/Medaljf%C3%B6rdelning_vid_olympiska_sommarspelen_2020">https://sv.wikipedia.org/wiki/Medaljf%C3%B6rdelning_vid_olympiska_sommarspelen_2020</a> hittar du aktuell medaljfördelning för OS i Tokyo. Tabellen kan hämtas med</p>
+<pre class="r"><code>library(rvest)
+url &lt;- &quot;https://sv.wikipedia.org/wiki/Medaljf%C3%B6rdelning_vid_olympiska_sommarspelen_2020&quot;
+read_html(url) %&gt;% 
+  html_element(&quot;.wikitable&quot;) %&gt;% 
+  html_table()</code></pre>
+<pre><code>## # A tibble: 44 x 7
+##    Placering Land      Guld Silver Brons `Totalt antalmeda~ `Placering efterant~
+##    &lt;chr&gt;     &lt;chr&gt;    &lt;int&gt;  &lt;int&gt; &lt;int&gt;              &lt;int&gt;                &lt;int&gt;
+##  1 1         Kina         6      3     6                 15                    1
+##  2 2         USA          6      3     4                 13                    2
+##  3 3         Japan        6      1     1                  8                    3
+##  4 4         Storbri~     3      2     1                  6                    6
+##  5 5         Austral~     2      1     3                  6                    6
+##  6 6         Sydkorea     2      0     3                  5                    8
+##  7 7         ROC          1      4     3                  8                    3
+##  8 8         Italien      1      3     4                  8                    3
+##  9 9         Kanada       1      2     0                  3                    9
+## 10 10        Frankri~     1      1     1                  3                    9
+## # ... with 34 more rows</code></pre>
+<p>En motsvarande tabell för t.ex. OS i Rio kan hämtas genom att byta <code>2020</code> mot <code>2016</code>.</p>
+<p>Konstruera en funktion</p>
+<pre class="r"><code>get_medals &lt;- function(year){
+  ...
+}</code></pre>
+<p>som returnerar medaljtabellen för OS-år <code>year</code> som nedan</p>
+<pre class="r"><code>get_medals(2016)</code></pre>
+<pre><code>## # A tibble: 264 x 4
+##     year country        class  number
+##    &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;   &lt;int&gt;
+##  1  2016 USA            Guld       46
+##  2  2016 USA            Silver     37
+##  3  2016 USA            Brons      38
+##  4  2016 Storbritannien Guld       27
+##  5  2016 Storbritannien Silver     23
+##  6  2016 Storbritannien Brons      17
+##  7  2016 Kina           Guld       26
+##  8  2016 Kina           Silver     18
+##  9  2016 Kina           Brons      26
+## 10  2016 Ryssland       Guld       19
+## # ... with 254 more rows</code></pre>
+<ul>
+<li>Använd <code>map_df</code> med <code>seq(1948, 2020, by = 4)</code> och <code>get_medals</code> som argument för att skapa en tabell över medaljfördelningen för alla sommar OS sedan 1948.</li>
+</ul>
+</div>
+<div id="gapminder-data-3" class="section level4">
+<h4>Gapminder data</h4>
+<p>I en <a href="https://mt3003-st21.github.io/schedule.html#v28:_Omforma_och_sammanfl%C3%A4ta_tabeller">tidigare övning</a> omformade vi en csv-fil från gapminder till ett mer användbart format. Nedanstående kod hämtar fler filer och placerar dem i <code>data/gapminder_raw</code></p>
+<pre class="r"><code>dir.create(&quot;data/gapminder_raw&quot;)
+filenames &lt;- c(&quot;cell_phones_total.csv&quot;, &quot;child_mortality_0_5_year_olds_dying_per_1000_born.csv&quot;, 
+               &quot;children_per_woman_total_fertility.csv&quot;, &quot;co2_emissions_tonnes_per_person.csv&quot;, 
+               &quot;income_per_person_gdppercapita_ppp_inflation_adjusted.csv&quot;, 
+               &quot;life_expectancy_years.csv&quot;, &quot;population_total.csv&quot;)
+
+urls &lt;- str_c(&quot;https://github.com/MT3003-ST21/data/raw/main/gapminder_raw/&quot;, filenames)
+destfiles &lt;- str_c(&quot;gapminder_raw/&quot;, filenames)
+walk2(urls, destfiles, download.file)</code></pre>
+<ul>
+<li>Konstruera en funktion</li>
+</ul>
+<pre class="r"><code>read_gapminder &lt;- function(file, path = &quot;data/gapminder_raw/&quot;){
+  ...
+}</code></pre>
+<p>som genererar följande</p>
+<pre class="r"><code>read_gapminder(&quot;life_expectancy_years.csv&quot;)</code></pre>
+<pre><code>## # A tibble: 56,889 x 4
+##    country     year  value variable             
+##    &lt;chr&gt;       &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;                
+##  1 Afghanistan 1800   28.2 life_expectancy_years
+##  2 Afghanistan 1801   28.2 life_expectancy_years
+##  3 Afghanistan 1802   28.2 life_expectancy_years
+##  4 Afghanistan 1803   28.2 life_expectancy_years
+##  5 Afghanistan 1804   28.2 life_expectancy_years
+##  6 Afghanistan 1805   28.2 life_expectancy_years
+##  7 Afghanistan 1806   28.1 life_expectancy_years
+##  8 Afghanistan 1807   28.1 life_expectancy_years
+##  9 Afghanistan 1808   28.1 life_expectancy_years
+## 10 Afghanistan 1809   28.1 life_expectancy_years
+## # ... with 56,879 more rows</code></pre>
+<p>här kan du ge kolumnen <code>variable</code> värdet <code>str_sub(file, 1, -5)</code>.</p>
+<ul>
+<li>Skapa en tabell (samma fyra kolumner) med alla variabler genom att använda <code>map_df</code> med argument <code>list.files("data/gapminder_raw/")</code> och <code>read_gapminder</code>.</li>
+</ul>
 <hr />
+</div>
 </div>
 </div>
 <div id="v31-apier-databaser-och-webbskrap" class="section level2">
 <h2><strong>v31</strong>: APIer, databaser och webbskrap</h2>
+<div id="mål-denna-vecka-8" class="section level3">
+<h3>Mål denna vecka</h3>
+<ul>
+<li>Använda grundläggande funktioner i paket som <code>httr</code>, <code>dbplyr</code> och <code>rvest</code>.</li>
+</ul>
+</div>
+<div id="kursmaterial-8" class="section level3">
+<h3>Kursmaterial</h3>
+<ul>
+<li>R4DS: <a href="https://r4ds.had.co.nz/program-intro.html">Kapitel 17-21</a></li>
+</ul>
+</div>
+<div id="övningar-7" class="section level3">
+<h3>Övningar</h3>
 <hr />
+</div>
 </div>
 <div id="v32-mer-om-visualisering" class="section level2">
 <h2><strong>v32</strong>: Mer om visualisering</h2>

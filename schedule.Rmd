@@ -473,10 +473,115 @@ sentiment_lex <- read_csv("https://svn.spraakdata.gu.se/sb-arkiv/pub/lmf/sentime
 
 ### Övningar
 
+#### Booli figurer
+
+Koden bakom en figur skapad med `ggplot` kan bli många rader om man vill finjustera detaljer. Skall man upprepa en figur för olika parametervärden är det därför praktiskt att skriva en funktion. Använd tabellen över alla försäljningar i innerstaden som laddas ned med
+```{r, eval = FALSE, echo = TRUE}
+download.file("https://github.com/MT3003-ST21/data/raw/main/booli_innerstad_2021-07-02.csv",
+              "data/booli_innerstad_2021-07-02.csv")
+booli_data <- read_csv("data/booli_innerstad_2021-07-02.csv")
+```
+
+
+- Konstruera en funktion 
+```{r, eval = FALSE, echo = TRUE}
+plot_price_ts <- function(data, title = "Pris per kvadratmeter i Stockholms innerstad"){
+  ...
+}
+```
+som skapar en figur motsvarande den i Laboration 1 baserat på givet `data`.
+
+- Vill vi nu plotta t.ex. tvåor kan vi använda funktionen med anropet `booli_data %>% filter(rooms == 2) %>% plot_price_ts()`. Lägg till ett argument `rooms` till funktionen så att `plot_price_ts(booli_data, rooms = 2)` ger samma resultat.
+
+#### Olympiska medaljer
+
+På [https://sv.wikipedia.org/wiki/Medaljf%C3%B6rdelning_vid_olympiska_sommarspelen_2020](https://sv.wikipedia.org/wiki/Medaljf%C3%B6rdelning_vid_olympiska_sommarspelen_2020) hittar du aktuell medaljfördelning för OS i Tokyo. Tabellen kan hämtas med
+```{r, echo = TRUE}
+library(rvest)
+url <- "https://sv.wikipedia.org/wiki/Medaljf%C3%B6rdelning_vid_olympiska_sommarspelen_2020"
+read_html(url) %>% 
+  html_element(".wikitable") %>% 
+  html_table()
+```
+En motsvarande tabell för t.ex. OS i Rio kan hämtas genom att byta `2020` mot `2016`.
+
+Konstruera en funktion
+```{r, echo = TRUE}
+get_medals <- function(year){
+  ...
+}
+```
+som returnerar medaljtabellen för OS-år `year` som nedan
+```{r, echo = FALSE}
+get_medals <- function(year){
+  url <- str_c("https://sv.wikipedia.org/wiki/Medaljf%C3%B6rdelning_vid_olympiska_sommarspelen_", year)
+  table <- read_html(url) %>% 
+    html_element(".wikitable") %>% 
+    html_table()
+  table %>% 
+    select(country = Land, Guld, Silver, Brons) %>% 
+    mutate(year = year, .before = 1) %>% 
+    pivot_longer(Guld:Brons, names_to = "class", values_to = "number")
+}
+```
+```{r, echo = TRUE}
+get_medals(2016)
+```
+
+- Använd `map_df` med `seq(1948, 2020, by = 4)` och `get_medals` som argument för att skapa en tabell över medaljfördelningen för alla sommar OS sedan 1948.
+
+#### Gapminder data
+
+I en [tidigare övning](https://mt3003-st21.github.io/schedule.html#v28:_Omforma_och_sammanfl%C3%A4ta_tabeller) omformade vi en csv-fil från gapminder till ett mer användbart format. Nedanstående kod hämtar fler filer och placerar dem i `data/gapminder_raw`
+
+```{r, eval=FALSE, echo = TRUE}
+dir.create("data/gapminder_raw")
+filenames <- c("cell_phones_total.csv", "child_mortality_0_5_year_olds_dying_per_1000_born.csv", 
+               "children_per_woman_total_fertility.csv", "co2_emissions_tonnes_per_person.csv", 
+               "income_per_person_gdppercapita_ppp_inflation_adjusted.csv", 
+               "life_expectancy_years.csv", "population_total.csv")
+
+urls <- str_c("https://github.com/MT3003-ST21/data/raw/main/gapminder_raw/", filenames)
+destfiles <- str_c("gapminder_raw/", filenames)
+walk2(urls, destfiles, download.file)
+```
+
+- Konstruera en funktion
+```{r, eval = FALSE, echo = TRUE}
+read_gapminder <- function(file, path = "data/gapminder_raw/"){
+  ...
+}
+```
+som genererar följande
+```{r, echo = FALSE}
+read_gapminder <- function(file, path = "data/gapminder_raw/"){
+  read_csv(str_c(path, file)) %>% 
+    pivot_longer(-country, names_to = "year", values_to = "value") %>% 
+    mutate(variable = str_sub(file, 1, -5))
+}
+```
+```{r, echo = TRUE}
+read_gapminder("life_expectancy_years.csv")
+```
+här kan du ge kolumnen `variable` värdet `str_sub(file, 1, -5)`.
+
+- Skapa en tabell (samma fyra kolumner) med alla variabler genom att använda `map_df` med argument `list.files("data/gapminder_raw/")` och `read_gapminder`.
 
 ***
 
 ## **v31**: APIer, databaser och webbskrap
+
+### Mål denna vecka
+
+- Använda grundläggande funktioner i paket som `httr`, `dbplyr` och `rvest`.
+
+### Kursmaterial
+
+
+- R4DS: [Kapitel 17-21](https://r4ds.had.co.nz/program-intro.html) 
+
+### Övningar
+
 
 ***
 
