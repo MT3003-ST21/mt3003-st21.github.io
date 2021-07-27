@@ -543,7 +543,7 @@ filenames <- c("cell_phones_total.csv", "child_mortality_0_5_year_olds_dying_per
                "life_expectancy_years.csv", "population_total.csv")
 
 urls <- str_c("https://github.com/MT3003-ST21/data/raw/main/gapminder_raw/", filenames)
-destfiles <- str_c("gapminder_raw/", filenames)
+destfiles <- str_c("data/gapminder_raw/", filenames)
 walk2(urls, destfiles, download.file)
 ```
 
@@ -684,4 +684,14 @@ html_text(elements)[-1]
 ***
 
 ## **v32**: Mer om visualisering
+
+### Kursmaterial
+
+- Kieran Healy, *Data Visualization*, [Kapitel 1](https://socviz.co/lookatdata.html).
+- R4DS: [Kapitel 28](https://r4ds.had.co.nz/graphics-for-communication.html).
+
+
+### Övningar
+
+- Gå igenom dina figurer från laborationer, kan de förbättras?
 
