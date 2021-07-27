@@ -511,17 +511,18 @@ get_medals <- function(year){
   ...
 }
 ```
-som returnerar medaljtabellen för OS-år `year` som nedan
+som returnerar medaljtabellen för OS-år `year` som nedan (glöm inte ta bort Total-raden)
 ```{r, echo = FALSE}
 get_medals <- function(year){
   url <- str_c("https://sv.wikipedia.org/wiki/Medaljf%C3%B6rdelning_vid_olympiska_sommarspelen_", year)
   table <- read_html(url) %>% 
     html_element(".wikitable") %>% 
-    html_table()
+    html_table() %>% 
+    filter(Land != "Total")
   table %>% 
     select(country = Land, Guld, Silver, Brons) %>% 
     mutate(year = year, .before = 1) %>% 
-    pivot_longer(Guld:Brons, names_to = "class", values_to = "number")
+    pivot_longer(Guld:Brons, names_to = "class", values_to = "number") 
 }
 ```
 ```{r, echo = TRUE}
@@ -577,10 +578,107 @@ här kan du ge kolumnen `variable` värdet `str_sub(file, 1, -5)`.
 
 ### Kursmaterial
 
+#### Kommunicera med ett web-API
 
-- R4DS: [Kapitel 17-21](https://r4ds.had.co.nz/program-intro.html) 
+Ett vanligt sätt att kommunicera med en databas är via ett så kallat [REST API](https://sv.wikipedia.org/wiki/Representational_State_Transfer), där anrop sker genom en webbadress (url). För populära API
+finns i allmänhet färdiga paket som förenklar kommunikationen, som t.ex. [rtweet](https://cran.r-project.org/web/packages/rtweet/), [spotifyr](https://cran.r-project.org/web/packages/spotifyr/index.html) och [rgbif](https://cran.r-project.org/web/packages/rgbif/index.html). Saknas sådant kan man använta paketet `httr` för att själv konstruera anrop, vi kommer använda funktionerna `GET` och `content` från detta paket.
+
+##### A-$\pi$
+
+[A-$\pi$](https://pi.delivery/#apipi_get) är ett enkelt API där du kan hämta en sekvens av $\pi$:s decimaler. Du behöver ange en startposition (`start`) och antal siffror (`numberOfDigits`), första 10 decimalerna ges av anropet [`http://api.pi.delivery/v1/pi?start=1&numberOfDigits=10`](http://api.pi.delivery/v1/pi?start=1&numberOfDigits=10) som vi gör från R med
+```{r, echo = TRUE}
+library(httr)
+response <- GET("http://api.pi.delivery/v1/pi?start=1&numberOfDigits=10")
+content(response)
+```
+
+##### Nobel API
+
+På [https://nobelprize.readme.io/](https://nobelprize.readme.io/) finns ett API där du kan hämta data om nobelpriser och pristagare. Välj en kategori, t.ex. [prize](https://nobelprize.readme.io/docs/prize) och prova göra ett anrop under "Try it out" längst ned på sidan. Klicka "Try it!" och notera den URL som genereras i fönstret under. Väljer vi format `csv` och category `literature` blir denna `http://api.nobelprize.org/v1/prize.csv?category=literature`. För att hämta resultatet till R
+```{r, echo = TRUE}
+response <- GET("http://api.nobelprize.org/v1/prize.csv?category=literature")
+content(response)
+```
+
+
+#### Skrapa webbsidor
+
+Ibland saknas ett öppet API och vi blir tvungna att skrapa tabeller direkt från en webbsidas html-kod. Ett exempel gavs i föregående veckas uppgifter där vi hämtade tabeller över OS-medaljer från Wikipedia. För att lyckas med detta behövs grundläggande förståelse för 
+hur html-koden är uppbyggd med [*taggar* och *element*](https://sv.wikipedia.org/wiki/HTML-element). Ett element består av en starttagg med eventuella attribut, innehåll och en sluttagg kodat som `<tagg attributnamn="värde">Innehåll</tagg>`. Informationen vi är ute efter är oftast `Innehåll` (men ibland `värde`).
+
+Paketet `rvest` innehåller funktioner för att läsa webbsidor och extrahera information, vi illustrerar med ett minimalt exempel där vi vill få ut innehållet i taggen `b` ur `<a> 1 </a> <b> 2 </b>`. Först läser vi in html-koden
+```{r, echo = TRUE}
+page <- read_html("<a> 1 </a> <b> 2 </b>")
+page
+```
+sedan extraherar vi taggen `b` med en så kallad [CSS-väljare](https://www.w3schools.com/cssref/css_selectors.asp) 
+```{r, echo = TRUE}
+elements <- html_elements(page, css = "b")
+elements
+```
+slutligen drar vi ut innehållet som text
+```{r, echo = TRUE}
+html_text(elements)
+```
+Svårigheten ligger i allmänhet att hitta en CSS-väljare som plockar ut precis vad vi vill ha. I övningen med OS-medaljer vill vi 
+extrahera en specifik tabell från en Wikipedia-sida. En tabell i standardformat skrivs i html med start- och sluttagg `<table> ... </table>`, vi kan därför prova med `css = "table"`
+```{r, echo = TRUE}
+url <- "https://sv.wikipedia.org/wiki/Medaljf%C3%B6rdelning_vid_olympiska_sommarspelen_2020"
+page <- read_html(url)
+elements <- html_elements(page, css = "table")
+elements
+```
+Sidan innehåller fem tabeller där vi vill ha den första. Vi kan extrahera denna med
+```{r, echo = TRUE}
+html_table(elements[[1]])
+```
+men väljer istället att utnyttja `class`-attributet `wikitable` eftersom medaljtabellen inte ligger först på alla OS-sidor
+```{r, echo = TRUE}
+elements <- html_elements(page, css = ".wikitable")
+html_table(elements[[1]])
+```
+Punkten i `.wikitable` anger att det just är `class`-attributet vi skall välja efter (se [CSS-väljare](https://www.w3schools.com/cssref/css_selectors.asp)). Ett verktyg som är användbart för att identifiera dessa är [SelectorGadget](https://selectorgadget.com/), som till exempel kan installeras som ett tillägg i Chrome. 
+
+
+På linande sätt kan vi hämta aktuell tabell för Allsvenskan med
+```{r, echo = TRUE}
+url <- "https://www.allsvenskan.se/tabell"
+page <- read_html(url)
+elements <- html_elements(page, css = ".col-md-6")
+html_table(elements[[1]])
+```
+där SelectorGadget har använts för att hitta väljaren `.col-md-6`. Notera att rubrikerna behöver justering; tabellen är ju inte avsedd för skrapning och resultatet behöver därför ofta justeras. Vid webbskrapning är det viktigt att respektera att syftet i allmänhet inte är att dela data och därför inte belasta servrar i onödan. Upphovsrätten till data kan även vara skyddat genom [katalogskyddet](https://lagen.nu/1960:729#P49).
 
 ### Övningar
+
+##### Nobel API
+
+- Hämta alla pristagare ([Laureate](https://nobelprize.readme.io/docs/laureate)) och bestäm andelen män i varje priskategori.
+
+##### SR API
+
+Sveriges radio har ett [öppet API](https://sverigesradio.se/oppetapi) där man bland annat kan hämta [låtlistor från en given kanal och datum](https://sverigesradio.se/api/documentation/v2/metoder/musik.html). Svaret ges dock inte i vanligt csv-format utan som [XML](https://sv.wikipedia.org/wiki/XML) eller [JSON](https://sv.wikipedia.org/wiki/JSON), vilket är vanligt då dessa format är mer flexibla. Ofta är JSON enklare att arbeta med i R.
+
+- Konstruera en funktion
+```{r, echo = TRUE, eval = FALSE}
+get_songs <- function(channel, date){
+  ...
+}
+```
+som hämtar låtlistan för ett givet [kanalnummer](http://api.sr.se/api/v2/channels/) och datum. Begär svaret i JSON genom att avsluta anropet med `&format=json`. Du kan konvertera det svar (`response`) du får av `GET` med `content(response, "text") %>% jsonlite::fromJSON()`.
+
+##### Skrapa Dramaten
+
+På [Dramatens arkiv Rollboken](https://old.dramaten.se/medverkande/rollboken) kan man söka efter uppgifter om deras produktioner. Eftersom de tabeller som genereras inte är i standardformat blir det enklast att skrapa varje variabel för sig. Namn på [uppsättningarna från 2019](https://old.dramaten.se/medverkande/rollboken/?category=date&query=2019) får vi t.ex. med
+```{r, echo = TRUE}
+url <- "https://old.dramaten.se/medverkande/rollboken/?category=date&query=2019"
+page <- read_html(url)
+elements <- html_elements(page, css = ".play-name")
+html_text(elements)[-1]
+```
+(här tar `[-1]` bort första elementet, rubriken).
+
+- Identifiera CSS-väljare och skrapa övriga kolumner i tabellen.
 
 
 ***

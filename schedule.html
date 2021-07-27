@@ -821,26 +821,26 @@ url &lt;- &quot;https://sv.wikipedia.org/wiki/Medaljf%C3%B6rdelning_vid_olympisk
 read_html(url) %&gt;% 
   html_element(&quot;.wikitable&quot;) %&gt;% 
   html_table()</code></pre>
-<pre><code>## # A tibble: 44 x 7
+<pre><code>## # A tibble: 54 x 7
 ##    Placering Land      Guld Silver Brons `Totalt antalmeda~ `Placering efterant~
 ##    &lt;chr&gt;     &lt;chr&gt;    &lt;int&gt;  &lt;int&gt; &lt;int&gt;              &lt;int&gt;                &lt;int&gt;
-##  1 1         Kina         6      3     6                 15                    1
-##  2 2         USA          6      3     4                 13                    2
-##  3 3         Japan        6      1     1                  8                    3
-##  4 4         Storbri~     3      2     1                  6                    6
-##  5 5         Austral~     2      1     3                  6                    6
-##  6 6         Sydkorea     2      0     3                  5                    8
-##  7 7         ROC          1      4     3                  8                    3
-##  8 8         Italien      1      3     4                  8                    3
-##  9 9         Kanada       1      2     0                  3                    9
-## 10 10        Frankri~     1      1     1                  3                    9
-## # ... with 34 more rows</code></pre>
+##  1 1         USA          8      3     8                 19                    1
+##  2 2         Japan        8      2     3                 13                    4
+##  3 3         Kina         7      5     7                 19                    1
+##  4 4         ROC          5      7     3                 15                    3
+##  5 5         Storbri~     4      5     1                 10                    5
+##  6 6         Austral~     3      1     4                  8                    7
+##  7 7         Sydkorea     3      0     4                  7                    8
+##  8 8         Kosovo       2      0     0                  2                   17
+##  9 9         Italien      1      4     4                  9                    6
+## 10 10        Kanada       1      3     2                  6                    9
+## # ... with 44 more rows</code></pre>
 <p>En motsvarande tabell för t.ex. OS i Rio kan hämtas genom att byta <code>2020</code> mot <code>2016</code>.</p>
 <p>Konstruera en funktion</p>
 <pre class="r"><code>get_medals &lt;- function(year){
   ...
 }</code></pre>
-<p>som returnerar medaljtabellen för OS-år <code>year</code> som nedan</p>
+<p>som returnerar medaljtabellen för OS-år <code>year</code> som nedan (glöm inte ta bort Total-raden)</p>
 <pre class="r"><code>get_medals(2016)</code></pre>
 <pre><code>## # A tibble: 264 x 4
 ##     year country        class  number
@@ -912,13 +912,178 @@ walk2(urls, destfiles, download.file)</code></pre>
 </div>
 <div id="kursmaterial-8" class="section level3">
 <h3>Kursmaterial</h3>
-<ul>
-<li>R4DS: <a href="https://r4ds.had.co.nz/program-intro.html">Kapitel 17-21</a></li>
-</ul>
+<div id="kommunicera-med-ett-web-api" class="section level4">
+<h4>Kommunicera med ett web-API</h4>
+<p>Ett vanligt sätt att kommunicera med en databas är via ett så kallat <a href="https://sv.wikipedia.org/wiki/Representational_State_Transfer">REST API</a>, där anrop sker genom en webbadress (url). För populära API finns i allmänhet färdiga paket som förenklar kommunikationen, som t.ex. <a href="https://cran.r-project.org/web/packages/rtweet/">rtweet</a>, <a href="https://cran.r-project.org/web/packages/spotifyr/index.html">spotifyr</a> och <a href="https://cran.r-project.org/web/packages/rgbif/index.html">rgbif</a>. Saknas sådant kan man använta paketet <code>httr</code> för att själv konstruera anrop, vi kommer använda funktionerna <code>GET</code> och <code>content</code> från detta paket.</p>
+<div id="a-pi" class="section level5">
+<h5>A-<span class="math inline">\(\pi\)</span></h5>
+<p><a href="https://pi.delivery/#apipi_get">A-<span class="math inline">\(\pi\)</span></a> är ett enkelt API där du kan hämta en sekvens av <span class="math inline">\(\pi\)</span>:s decimaler. Du behöver ange en startposition (<code>start</code>) och antal siffror (<code>numberOfDigits</code>), första 10 decimalerna ges av anropet <a href="http://api.pi.delivery/v1/pi?start=1&amp;numberOfDigits=10"><code>http://api.pi.delivery/v1/pi?start=1&amp;numberOfDigits=10</code></a> som vi gör från R med</p>
+<pre class="r"><code>library(httr)
+response &lt;- GET(&quot;http://api.pi.delivery/v1/pi?start=1&amp;numberOfDigits=10&quot;)
+content(response)</code></pre>
+<pre><code>## $content
+## [1] &quot;1415926535&quot;</code></pre>
+</div>
+<div id="nobel-api" class="section level5">
+<h5>Nobel API</h5>
+<p>På <a href="https://nobelprize.readme.io/">https://nobelprize.readme.io/</a> finns ett API där du kan hämta data om nobelpriser och pristagare. Välj en kategori, t.ex. <a href="https://nobelprize.readme.io/docs/prize">prize</a> och prova göra ett anrop under “Try it out” längst ned på sidan. Klicka “Try it!” och notera den URL som genereras i fönstret under. Väljer vi format <code>csv</code> och category <code>literature</code> blir denna <code>http://api.nobelprize.org/v1/prize.csv?category=literature</code>. För att hämta resultatet till R</p>
+<pre class="r"><code>response &lt;- GET(&quot;http://api.nobelprize.org/v1/prize.csv?category=literature&quot;)
+content(response)</code></pre>
+<pre><code>## # A tibble: 117 x 8
+##     year category  overallMotivati~    id firstname surname motivation     share
+##    &lt;dbl&gt; &lt;chr&gt;     &lt;lgl&gt;            &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+##  1  2020 literatu~ NA                 993 Louise    Glück   &quot;\&quot;for her un~     1
+##  2  2019 literatu~ NA                 980 Peter     Handke  &quot;\&quot;for an inf~     1
+##  3  2018 literatu~ NA                 979 Olga      Tokarc~ &quot;\&quot;for a narr~     1
+##  4  2017 literatu~ NA                 947 Kazuo     Ishigu~ &quot;\&quot;who in nov~     1
+##  5  2016 literatu~ NA                 937 Bob       Dylan   &quot;\&quot;for having~     1
+##  6  2015 literatu~ NA                 924 Svetlana  Alexie~ &quot;\&quot;for her po~     1
+##  7  2014 literatu~ NA                 912 Patrick   Modiano &quot;\&quot;for the ar~     1
+##  8  2013 literatu~ NA                 892 Alice     Munro   &quot;\&quot;master of ~     1
+##  9  2012 literatu~ NA                 880 Mo        Yan     &quot;\&quot;who with h~     1
+## 10  2011 literatu~ NA                 868 Tomas     Transt~ &quot;\&quot;because th~     1
+## # ... with 107 more rows</code></pre>
+</div>
+</div>
+<div id="skrapa-webbsidor" class="section level4">
+<h4>Skrapa webbsidor</h4>
+<p>Ibland saknas ett öppet API och vi blir tvungna att skrapa tabeller direkt från en webbsidas html-kod. Ett exempel gavs i föregående veckas uppgifter där vi hämtade tabeller över OS-medaljer från Wikipedia. För att lyckas med detta behövs grundläggande förståelse för hur html-koden är uppbyggd med <a href="https://sv.wikipedia.org/wiki/HTML-element"><em>taggar</em> och <em>element</em></a>. Ett element består av en starttagg med eventuella attribut, innehåll och en sluttagg kodat som <code>&lt;tagg attributnamn="värde"&gt;Innehåll&lt;/tagg&gt;</code>. Informationen vi är ute efter är oftast <code>Innehåll</code> (men ibland <code>värde</code>).</p>
+<p>Paketet <code>rvest</code> innehåller funktioner för att läsa webbsidor och extrahera information, vi illustrerar med ett minimalt exempel där vi vill få ut innehållet i taggen <code>b</code> ur <code>&lt;a&gt; 1 &lt;/a&gt; &lt;b&gt; 2 &lt;/b&gt;</code>. Först läser vi in html-koden</p>
+<pre class="r"><code>page &lt;- read_html(&quot;&lt;a&gt; 1 &lt;/a&gt; &lt;b&gt; 2 &lt;/b&gt;&quot;)
+page</code></pre>
+<pre><code>## {html_document}
+## &lt;html&gt;
+## [1] &lt;body&gt;\n&lt;a&gt; 1 &lt;/a&gt; &lt;b&gt; 2 &lt;/b&gt;\n&lt;/body&gt;</code></pre>
+<p>sedan extraherar vi taggen <code>b</code> med en så kallad <a href="https://www.w3schools.com/cssref/css_selectors.asp">CSS-väljare</a></p>
+<pre class="r"><code>elements &lt;- html_elements(page, css = &quot;b&quot;)
+elements</code></pre>
+<pre><code>## {xml_nodeset (1)}
+## [1] &lt;b&gt; 2 &lt;/b&gt;</code></pre>
+<p>slutligen drar vi ut innehållet som text</p>
+<pre class="r"><code>html_text(elements)</code></pre>
+<pre><code>## [1] &quot; 2 &quot;</code></pre>
+<p>Svårigheten ligger i allmänhet att hitta en CSS-väljare som plockar ut precis vad vi vill ha. I övningen med OS-medaljer vill vi extrahera en specifik tabell från en Wikipedia-sida. En tabell i standardformat skrivs i html med start- och sluttagg <code>&lt;table&gt; ... &lt;/table&gt;</code>, vi kan därför prova med <code>css = "table"</code></p>
+<pre class="r"><code>url &lt;- &quot;https://sv.wikipedia.org/wiki/Medaljf%C3%B6rdelning_vid_olympiska_sommarspelen_2020&quot;
+page &lt;- read_html(url)
+elements &lt;- html_elements(page, css = &quot;table&quot;)
+elements</code></pre>
+<pre><code>## {xml_nodeset (5)}
+## [1] &lt;table class=&quot;wikitable sortable&quot;&gt;&lt;tbody&gt;\n&lt;tr&gt;\n&lt;th&gt;Placering\n&lt;/th&gt;\n&lt;t ...
+## [2] &lt;table class=&quot;navbox&quot; style=&quot;border-spacing:0; ;&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td style=&quot;p ...
+## [3] &lt;table class=&quot;collapsible autocollapse&quot; style=&quot;width:100%;border-spacing: ...
+## [4] &lt;table class=&quot;navbox&quot; style=&quot;border-spacing:0; ;&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td style=&quot;p ...
+## [5] &lt;table class=&quot;collapsible autocollapse&quot; style=&quot;width:100%;border-spacing: ...</code></pre>
+<p>Sidan innehåller fem tabeller där vi vill ha den första. Vi kan extrahera denna med</p>
+<pre class="r"><code>html_table(elements[[1]])</code></pre>
+<pre><code>## # A tibble: 54 x 7
+##    Placering Land      Guld Silver Brons `Totalt antalmeda~ `Placering efterant~
+##    &lt;chr&gt;     &lt;chr&gt;    &lt;int&gt;  &lt;int&gt; &lt;int&gt;              &lt;int&gt;                &lt;int&gt;
+##  1 1         USA          8      3     8                 19                    1
+##  2 2         Japan        8      2     3                 13                    4
+##  3 3         Kina         7      5     7                 19                    1
+##  4 4         ROC          5      7     3                 15                    3
+##  5 5         Storbri~     4      5     1                 10                    5
+##  6 6         Austral~     3      1     4                  8                    7
+##  7 7         Sydkorea     3      0     4                  7                    8
+##  8 8         Kosovo       2      0     0                  2                   17
+##  9 9         Italien      1      4     4                  9                    6
+## 10 10        Kanada       1      3     2                  6                    9
+## # ... with 44 more rows</code></pre>
+<p>men väljer istället att utnyttja <code>class</code>-attributet <code>wikitable</code> eftersom medaljtabellen inte ligger först på alla OS-sidor</p>
+<pre class="r"><code>elements &lt;- html_elements(page, css = &quot;.wikitable&quot;)
+html_table(elements[[1]])</code></pre>
+<pre><code>## # A tibble: 54 x 7
+##    Placering Land      Guld Silver Brons `Totalt antalmeda~ `Placering efterant~
+##    &lt;chr&gt;     &lt;chr&gt;    &lt;int&gt;  &lt;int&gt; &lt;int&gt;              &lt;int&gt;                &lt;int&gt;
+##  1 1         USA          8      3     8                 19                    1
+##  2 2         Japan        8      2     3                 13                    4
+##  3 3         Kina         7      5     7                 19                    1
+##  4 4         ROC          5      7     3                 15                    3
+##  5 5         Storbri~     4      5     1                 10                    5
+##  6 6         Austral~     3      1     4                  8                    7
+##  7 7         Sydkorea     3      0     4                  7                    8
+##  8 8         Kosovo       2      0     0                  2                   17
+##  9 9         Italien      1      4     4                  9                    6
+## 10 10        Kanada       1      3     2                  6                    9
+## # ... with 44 more rows</code></pre>
+<p>Punkten i <code>.wikitable</code> anger att det just är <code>class</code>-attributet vi skall välja efter (se <a href="https://www.w3schools.com/cssref/css_selectors.asp">CSS-väljare</a>). Ett verktyg som är användbart för att identifiera dessa är <a href="https://selectorgadget.com/">SelectorGadget</a>, som till exempel kan installeras som ett tillägg i Chrome.</p>
+<p>På linande sätt kan vi hämta aktuell tabell för Allsvenskan med</p>
+<pre class="r"><code>url &lt;- &quot;https://www.allsvenskan.se/tabell&quot;
+page &lt;- read_html(url)
+elements &lt;- html_elements(page, css = &quot;.col-md-6&quot;)
+html_table(elements[[1]])</code></pre>
+<pre><code>## # A tibble: 33 x 10
+##    `#`   ``    LAG   ``             M     V     O     F     `+/-` P    
+##    &lt;chr&gt; &lt;lgl&gt; &lt;chr&gt; &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+##  1 1     NA    &quot;&quot;    Malmö FF       13    9     2     2     31-16 29   
+##  2 2     NA    &quot;&quot;    Djurgårdens IF 12    8     3     1     22-7  27   
+##  3 3     NA    &quot;&quot;    IF Elfsborg    13    7     2     4     19-13 23   
+##  4 4     NA    &quot;&quot;    Hammarby IF    12    6     3     3     24-16 21   
+##  5 5     NA    &quot;&quot;    AIK            12    6     3     3     16-12 21   
+##  6 6     NA    &quot;&quot;    IFK Norrköping 12    5     2     5     15-12 17   
+##  7 7     NA    &quot;&quot;    BK Häcken      12    4     4     4     17-16 16   
+##  8 8     NA    &quot;&quot;    IFK Göteborg   12    3     6     3     14-14 15   
+##  9 9     NA    &quot;&quot;    Halmstads BK   12    3     6     3     10-10 15   
+## 10 10    NA    &quot;&quot;    IK Sirius      12    4     3     5     14-23 15   
+## # ... with 23 more rows</code></pre>
+<p>där SelectorGadget har använts för att hitta väljaren <code>.col-md-6</code>. Notera att rubrikerna behöver justering; tabellen är ju inte avsedd för skrapning och resultatet behöver därför ofta justeras. Vid webbskrapning är det viktigt att respektera att syftet i allmänhet inte är att dela data och därför inte belasta servrar i onödan. Upphovsrätten till data kan även vara skyddat genom <a href="https://lagen.nu/1960:729#P49">katalogskyddet</a>.</p>
+</div>
 </div>
 <div id="övningar-7" class="section level3">
 <h3>Övningar</h3>
+<div id="nobel-api-1" class="section level5">
+<h5>Nobel API</h5>
+<ul>
+<li>Hämta alla pristagare (<a href="https://nobelprize.readme.io/docs/laureate">Laureate</a>) och bestäm andelen män i varje priskategori.</li>
+</ul>
+</div>
+<div id="sr-api" class="section level5">
+<h5>SR API</h5>
+<p>Sveriges radio har ett <a href="https://sverigesradio.se/oppetapi">öppet API</a> där man bland annat kan hämta <a href="https://sverigesradio.se/api/documentation/v2/metoder/musik.html">låtlistor från en given kanal och datum</a>. Svaret ges dock inte i vanligt csv-format utan som <a href="https://sv.wikipedia.org/wiki/XML">XML</a> eller <a href="https://sv.wikipedia.org/wiki/JSON">JSON</a>, vilket är vanligt då dessa format är mer flexibla. Ofta är JSON enklare att arbeta med i R.</p>
+<ul>
+<li>Konstruera en funktion</li>
+</ul>
+<pre class="r"><code>get_songs &lt;- function(channel, date){
+  ...
+}</code></pre>
+<p>som hämtar låtlistan för ett givet <a href="http://api.sr.se/api/v2/channels/">kanalnummer</a> och datum. Begär svaret i JSON genom att avsluta anropet med <code>&amp;format=json</code>. Du kan konvertera det svar (<code>response</code>) du får av <code>GET</code> med <code>content(response, "text") %&gt;% jsonlite::fromJSON()</code>.</p>
+</div>
+<div id="skrapa-dramaten" class="section level5">
+<h5>Skrapa Dramaten</h5>
+<p>På <a href="https://old.dramaten.se/medverkande/rollboken">Dramatens arkiv Rollboken</a> kan man söka efter uppgifter om deras produktioner. Eftersom de tabeller som genereras inte är i standardformat blir det enklast att skrapa varje variabel för sig. Namn på <a href="https://old.dramaten.se/medverkande/rollboken/?category=date&amp;query=2019">uppsättningarna från 2019</a> får vi t.ex. med</p>
+<pre class="r"><code>url &lt;- &quot;https://old.dramaten.se/medverkande/rollboken/?category=date&amp;query=2019&quot;
+page &lt;- read_html(url)
+elements &lt;- html_elements(page, css = &quot;.play-name&quot;)
+html_text(elements)[-1]</code></pre>
+<pre><code>##  [1] &quot;Förlovningen&quot;                               
+##  [2] &quot;Hålla andan&quot;                                
+##  [3] &quot;Den sista kabarén&quot;                          
+##  [4] &quot;Orfeus stiger ner&quot;                          
+##  [5] &quot;Lauras läppar&quot;                              
+##  [6] &quot;Hamlet&quot;                                     
+##  [7] &quot;Andante&quot;                                    
+##  [8] &quot;Hugh och Nancys många världar&quot;              
+##  [9] &quot;Guds olydiga revben&quot;                        
+## [10] &quot;Vilddjur&quot;                                   
+## [11] &quot;Linje Lusta&quot;                                
+## [12] &quot;Bortbytingen&quot;                               
+## [13] &quot;Performance Lecture: Micael Dahlen/Om lycka&quot;
+## [14] &quot;Lilla måsen&quot;                                
+## [15] &quot;Dövheten&quot;                                   
+## [16] &quot;Ifigenia i Aulis&quot;                           
+## [17] &quot;Häxjakten&quot;                                  
+## [18] &quot;Evakuering&quot;                                 
+## [19] &quot;Fedra/Hippolytos&quot;                           
+## [20] &quot;Vi som fick leva om våra liv&quot;               
+## [21] &quot;I väntan på Godot&quot;                          
+## [22] &quot;Lilla döden hälsar på&quot;                      
+## [23] &quot;Performance lecture: Om sanning&quot;</code></pre>
+<p>(här tar <code>[-1]</code> bort första elementet, rubriken).</p>
+<ul>
+<li>Identifiera CSS-väljare och skrapa övriga kolumner i tabellen.</li>
+</ul>
 <hr />
+</div>
 </div>
 </div>
 <div id="v32-mer-om-visualisering" class="section level2">
