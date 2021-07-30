@@ -16,6 +16,7 @@ library(tidyverse)
 
 ### [Laboration 3](lab3.html) (deadline 2021-07-25)
 
+### [Laboration 4](lab4.html) (deadline 2021-08-15)
 
 ## Kamratgranskning
 
