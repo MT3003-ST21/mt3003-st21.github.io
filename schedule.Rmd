@@ -533,7 +533,7 @@ get_medals(2016)
 
 #### Gapminder data
 
-I en [tidigare övning](https://mt3003-st21.github.io/schedule.html#v28:_Omforma_och_sammanfl%C3%A4ta_tabeller) omformade vi en csv-fil från gapminder till ett mer användbart format. Nedanstående kod hämtar fler filer och placerar dem i `data/gapminder_raw`
+I en [tidigare övning](https://mt3003-st21.github.io/schedule.html#v28:_Omforma_och_sammanfl%C3%A4ta_tabeller) omformade vi en csv-fil från gapminder till ett mer användbart format. Nedanstående kod hämtar fler filer och placerar dem i `data/gapminder_raw` 
 
 ```{r, eval=FALSE, echo = TRUE}
 dir.create("data/gapminder_raw")
@@ -649,6 +649,70 @@ html_table(elements[[1]])
 ```
 där SelectorGadget har använts för att hitta väljaren `.col-md-6`. Notera att rubrikerna behöver justering; tabellen är ju inte avsedd för skrapning och resultatet behöver därför ofta justeras. Vid webbskrapning är det viktigt att respektera att syftet i allmänhet inte är att dela data och därför inte belasta servrar i onödan. Upphovsrätten till data kan även vara skyddat genom [katalogskyddet](https://lagen.nu/1960:729#P49).
 
+#### Kommunicera med en SQL-databas
+
+[SQL](https://sv.wikipedia.org/wiki/Structured_Query_Language) är det idag dominerande språket för att ställa frågor till relationsdatabaser. Syntax är lik den vi lärt oss från `tidyverse`s `dplyr`-paket och med den kunskapen är det inte svårt att lära sig ställa enkla frågor i SQL. Här kommer vi dock använda paketet [`dbplyr`](https://dbplyr.tidyverse.org/) som sköter översättningen till databasens språk.
+
+Innan vi kan ställa frågor till en databas behöver vi skapa en anslutning med `DBI::dbConnect`. Vi ansluter här till en öppen 
+exempeldatabas `imdb_small` som innehåller ett mindre utrag ur [IMDB](https://www.imdb.com/) (se [Relational Dataset Repository](https://relational.fit.cvut.cz/) för en lista på deras öppna databaser)
+```{r, echo = TRUE}
+con <- DBI::dbConnect(
+  RMariaDB::MariaDB(),
+  host = "relational.fit.cvut.cz",
+  port = 3306,
+  username = "guest",
+  password = "relational",
+  db = "imdb_small"
+)
+```
+
+Raden `RMariaDB::MariaDB()` anger hur vi skall ansluta, vilket beror på vilken mjukvara som driver databasen. I det här fallet är det en [MySQL](https://sv.wikipedia.org/wiki/MySQL)-databas som stöds av R-paketet `RMariaDB` (se [DBI](https://dbi.r-dbi.org/) för alternativ). 
+
+Vi kan nu lista databasens tabeller med
+```{r, echo = TRUE}
+DBI::dbListTables(con)
+```
+och skapa en *virtuell* kopia av tabellen `movies` med
+```{r, echo = TRUE}
+movies <- tbl(con, "movies")
+movies
+```
+Här noterar vi att antalet rader i tabellen är listat som `??`, vilket beror på att `dbplyr` ser till att bara hämta så mycket som är nödvändigt för att visa tabellens inledande rader. Vill vi hämta hela tabellen som en vanlig `tibble` använder vi `collect`
+```{r, echo = TRUE}
+collect(movies)
+```
+
+Som ett exempel skapar vi en tabell över alla `Sci-Fi`-filmer i databasen med
+```{r, echo = TRUE}
+movies_genres <- tbl(con, "movies_genres")
+movies_genres %>% 
+  filter(genre == "Sci-Fi") %>% 
+  left_join(movies, by = c("movie_id" = "id")) %>% 
+  collect()
+```
+Vi kan även se den SQL-fråga som genererade resultatet med `show_query`
+```{r, echo = TRUE}
+movies_genres %>% 
+  filter(genre == "Sci-Fi") %>% 
+  left_join(movies, by = c("movie_id" = "id")) %>% 
+  show_query()
+```
+Slutligen  avslutar vi med att stänga ned anslutningen för att inte belasta servern i onödan
+```{r, echo = TRUE}
+DBI::dbDisconnect(con)
+```
+
+
+Sammanfattningsvis
+
+- Anslut till databasen med `DBI::dbConnect`.
+- Lista tabeller med `DBI::dbListTables`.
+- Skapa virtuella tabeller med `tbl`.
+- Skriv din kod med virtuella tabelller och vanlig `tidyverse`-syntax.
+- Avsluta med `collect`.
+- Stäng anslutningen med `DBI::dbDisconnect`.
+
+
 ### Övningar
 
 ##### Nobel API
@@ -680,6 +744,10 @@ html_text(elements)[-1]
 
 - Identifiera CSS-väljare och skrapa övriga kolumner i tabellen.
 
+
+##### Relational Dataset Repository
+
+Anslut till valfri databas på [Relational Dataset Repository](https://relational.fit.cvut.cz/) och prova ställa frågor som ovan. En mer fulltändig version av IMDB finns till exempel i `db = "imdb_ijs"`. Glöm inte stänga anslutningen när du är färdig.
 
 ***
 

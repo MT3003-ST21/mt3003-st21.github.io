@@ -13,7 +13,7 @@
 
 <title>Veckoschema</title>
 
-<script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -714,27 +714,27 @@ ggplot(karta_lan, aes(fill = LnNamn)) + geom_sf()</code></pre>
 <p>läsa ett valt stycke med</p>
 <pre class="r"><code>read_lines(&quot;data/hemsoborna.txt&quot;, skip = 194, n_max = 21) %&gt;% 
   str_c(collapse = &quot; &quot;)</code></pre>
-<pre><code>## [1] &quot;Han kom som ett yrväder en aprilafton och hade ett höganäskrus i en  svångrem om halsen. Clara och Lotten voro inne med sköt-ekan att hämta  honom på Dalarö brygga; men det dröjde evigheter, innan de kommo i båt.  De skulle till handelsman och ha en tunna tjära och på abeteket och hämta  gråsalva åt grisen, och så skulle de på posten och få ett frimärke, och  så skulle de ner till Fia Lövström i Kroken och låna tuppen mot ett  halvpund småtärna till notbygget, och sist hade de hamnat på  gästgivaregården, där Carlsson bjudit på kaffe med dopp. Och så kommo de  äntligen i båt, men Carlsson ville styra, och det kunde han inte, för han  hade aldrig sett en råseglare förr, och därför skrek han, att de skulle  hissa focken, som inte fanns.&quot;</code></pre>
+<pre><code>## [1] &quot;kaffet och sockret, flickor, och seglena är inne i bo&#39;n? Så, kom då opp,\r så ska ni väl ha er något att äta.\r \r Och sällskapet tågade upp för backen, Carlsson tyst, nyfiken, i väntan\r att få reda på huru hans liv skulle ställa sig på den nya platsen.\r \r Det brann eld i spiseln inne i stugan och det vita slagbordet hade en ren\r duk på; och på duken stod en brännvinsflaska hopsnörd mittpå som ett\r timglas, och runt kring henne Gustavsbergskoppar med rosor och\r förgätmigej; en nybakad bulle och skörtorkade skorpor, en smörtallrik,\r sockerskål och gräddkanna fullbordade uppdukningen, som Carlsson fann\r rikemansaktig och som han ej väntat sig så långt bortom all ära och\r redlighet. Men stugan själv såg inte heller dålig ut, när han mönstrade\r henne i det flammande skenet från spiseln, som korsade sig mot\r talgljusets i mässingsstaken och lyste i mahognychiffonjéns något suddiga\r polityr, speglade sig i väggklockans lackerade fodral och mässingspendel,\r gnistrade i silverinläggningarne på de långa fågelbössornas damascherade\r pipor och ritade upp de förgyllda bokstäverna på ryggarne av postillor,\r psalmböcker, almanackor och bondepraktikor.\r \r -- Stig fram, Carlsson, bjöd gumman, och Carlsson, som var en nyare tids\r&quot;</code></pre>
 <p>och spara hela boken i en tibble med</p>
 <pre class="r"><code>hemsoborna &lt;- tibble(row = read_lines(&quot;data/hemsoborna.txt&quot;, 
                                        skip = 90, n_max = 10178)) %&gt;% 
   filter(row != &quot;&quot;) %&gt;% 
   mutate(row_no = 1:n())
 hemsoborna</code></pre>
-<pre><code>## # A tibble: 4,021 x 2
-##    row                               row_no
-##    &lt;chr&gt;                              &lt;int&gt;
-##  1 HEMSÖBORNA                             1
-##  2 AV                                     2
-##  3 AUGUST STRINDBERG                      3
-##  4 STOCKHOLM                              4
-##  5 ALBERT BONNIERS FÖRLAG                 5
-##  6 _Copyright. Albert Bonnier 1914._      6
-##  7 STOCKHOLM                              7
-##  8 ALB. BONNIERS BOKTRYCKERI 1914         8
-##  9 HEMSÖBORNA                             9
-## 10 SKÄRGÅRDSBERÄTTELSE                   10
-## # ... with 4,011 more rows</code></pre>
+<pre><code>## # A tibble: 5,407 x 2
+##    row                                                                    row_no
+##    &lt;chr&gt;                                                                   &lt;int&gt;
+##  1 &quot;\r&quot;                                                                        1
+##  2 &quot;FÖRSTA KAPITLET.\r&quot;                                                        2
+##  3 &quot;\r&quot;                                                                        3
+##  4 &quot;Carlsson går in i tjänsten och befinnes\r&quot;                                 4
+##  5 &quot;vara en spelfågel.\r&quot;                                                      5
+##  6 &quot;\r&quot;                                                                        6
+##  7 &quot;\r&quot;                                                                        7
+##  8 &quot;Han kom som ett yrväder en aprilafton och hade ett höganäskrus i en\~      8
+##  9 &quot;svångrem om halsen. Clara och Lotten voro inne med sköt-ekan att häm~      9
+## 10 &quot;honom på Dalarö brygga; men det dröjde evigheter, innan de kommo i b~     10
+## # ... with 5,397 more rows</code></pre>
 <p>här har vi klippt bort text som inte hör till boken med <code>skip</code> och <code>n_max</code>, tagit bort tomma rader och lagt till radnummer. För att analysera texten vidare delar vi upp den ord för ord, konverterar bokstäver till gemener och lägger in en räknare för kapitel</p>
 <pre class="r"><code>hemsoborna_words &lt;- hemsoborna %&gt;% 
   mutate(word = str_extract_all(row, boundary(&quot;word&quot;))) %&gt;% 
@@ -748,20 +748,20 @@ hemsoborna</code></pre>
 </ul>
 <p>Vi kan nu få de vanligaste orden med</p>
 <pre class="r"><code>hemsoborna_words %&gt;% count(word, sort = TRUE)</code></pre>
-<pre><code>## # A tibble: 8,481 x 2
+<pre><code>## # A tibble: 9,146 x 2
 ##    word      n
 ##    &lt;chr&gt; &lt;int&gt;
-##  1 och    2457
-##  2 i      1053
+##  1 och    2456
+##  2 i      1052
 ##  3 han     940
 ##  4 att     875
-##  5 på      851
+##  5 på      849
 ##  6 som     811
-##  7 det     797
+##  7 det     796
 ##  8 en      756
 ##  9 med     571
 ## 10 sig     509
-## # ... with 8,471 more rows</code></pre>
+## # ... with 9,136 more rows</code></pre>
 <p>de flesta av dessa är så kallade stoppord, ord som är viktiga för att binda ihop texten men annars betydelsefattiga. För att ta bort dem hämtar vi en lista på svenska stoppord</p>
 <pre class="r"><code>stopwords &lt;- read_table(&quot;https://raw.githubusercontent.com/stopwords-iso/stopwords-sv/master/stopwords-sv.txt&quot;,
            col_names = &quot;word&quot;)</code></pre>
@@ -821,20 +821,20 @@ url &lt;- &quot;https://sv.wikipedia.org/wiki/Medaljf%C3%B6rdelning_vid_olympisk
 read_html(url) %&gt;% 
   html_element(&quot;.wikitable&quot;) %&gt;% 
   html_table()</code></pre>
-<pre><code>## # A tibble: 55 x 7
-##    Placering Land      Guld Silver Brons `Totalt antalmeda~ `Placering efterant~
-##    &lt;chr&gt;     &lt;chr&gt;    &lt;int&gt;  &lt;int&gt; &lt;int&gt;              &lt;int&gt;                &lt;int&gt;
-##  1 1         USA          9      5     8                 22                    1
-##  2 2         Kina         9      5     7                 21                    2
-##  3 3         Japan        9      3     5                 17                    3
-##  4 4         ROC          5      7     4                 16                    4
-##  5 5         Storbri~     4      5     2                 11                    5
-##  6 6         Austral~     3      1     5                  9                    7
-##  7 6         Sydkorea     3      1     5                  9                    7
-##  8 8         Frankri~     2      2     3                  7                    9
-##  9 9         Kosovo       2      0     0                  2                   21
-## 10 10        Italien      1      4     6                 11                    5
-## # ... with 45 more rows</code></pre>
+<pre><code>## # A tibble: 78 x 7
+##    Placering Land            Guld Silver Brons `Totalt antalme~ `Placering efte~
+##    &lt;chr&gt;     &lt;chr&gt;          &lt;int&gt;  &lt;int&gt; &lt;int&gt;            &lt;int&gt;            &lt;int&gt;
+##  1 1         Kina              28     16    14               58                2
+##  2 2         USA               21     24    16               61                1
+##  3 3         Japan             17      5    10               32                4
+##  4 4         Australien        14      3    14               31                6
+##  5 5         ROC               12     20    15               47                3
+##  6 6         Storbritannien    10     10    12               32                4
+##  7 7         Frankrike          6     10     6               22                8
+##  8 8         Sydkorea           5      4     9               18               10
+##  9 9         Italien            4      9    15               28                7
+## 10 10        Nederländerna      4      7     6               17               11
+## # ... with 68 more rows</code></pre>
 <p>En motsvarande tabell för t.ex. OS i Rio kan hämtas genom att byta <code>2020</code> mot <code>2016</code>.</p>
 <p>Konstruera en funktion</p>
 <pre class="r"><code>get_medals &lt;- function(year){
@@ -930,18 +930,18 @@ content(response)</code></pre>
 <pre class="r"><code>response &lt;- GET(&quot;http://api.nobelprize.org/v1/prize.csv?category=literature&quot;)
 content(response)</code></pre>
 <pre><code>## # A tibble: 117 x 8
-##     year category  overallMotivati~    id firstname surname motivation     share
-##    &lt;dbl&gt; &lt;chr&gt;     &lt;lgl&gt;            &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-##  1  2020 literatu~ NA                 993 Louise    Glück   &quot;\&quot;for her un~     1
-##  2  2019 literatu~ NA                 980 Peter     Handke  &quot;\&quot;for an inf~     1
-##  3  2018 literatu~ NA                 979 Olga      Tokarc~ &quot;\&quot;for a narr~     1
-##  4  2017 literatu~ NA                 947 Kazuo     Ishigu~ &quot;\&quot;who in nov~     1
-##  5  2016 literatu~ NA                 937 Bob       Dylan   &quot;\&quot;for having~     1
-##  6  2015 literatu~ NA                 924 Svetlana  Alexie~ &quot;\&quot;for her po~     1
-##  7  2014 literatu~ NA                 912 Patrick   Modiano &quot;\&quot;for the ar~     1
-##  8  2013 literatu~ NA                 892 Alice     Munro   &quot;\&quot;master of ~     1
-##  9  2012 literatu~ NA                 880 Mo        Yan     &quot;\&quot;who with h~     1
-## 10  2011 literatu~ NA                 868 Tomas     Transt~ &quot;\&quot;because th~     1
+##     year category   overallMotivation    id firstname surname  motivation  share
+##    &lt;dbl&gt; &lt;chr&gt;      &lt;lgl&gt;             &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;       &lt;dbl&gt;
+##  1  2020 literature NA                  993 Louise    Glück    &quot;\&quot;for her~     1
+##  2  2019 literature NA                  980 Peter     Handke   &quot;\&quot;for an ~     1
+##  3  2018 literature NA                  979 Olga      Tokarcz~ &quot;\&quot;for a n~     1
+##  4  2017 literature NA                  947 Kazuo     Ishiguro &quot;\&quot;who in ~     1
+##  5  2016 literature NA                  937 Bob       Dylan    &quot;\&quot;for hav~     1
+##  6  2015 literature NA                  924 Svetlana  Alexiev~ &quot;\&quot;for her~     1
+##  7  2014 literature NA                  912 Patrick   Modiano  &quot;\&quot;for the~     1
+##  8  2013 literature NA                  892 Alice     Munro    &quot;\&quot;master ~     1
+##  9  2012 literature NA                  880 Mo        Yan      &quot;\&quot;who wit~     1
+## 10  2011 literature NA                  868 Tomas     Transtr~ &quot;\&quot;because~     1
 ## # ... with 107 more rows</code></pre>
 </div>
 </div>
@@ -975,37 +975,37 @@ elements</code></pre>
 ## [5] &lt;table class=&quot;collapsible autocollapse&quot; style=&quot;width:100%;border-spacing: ...</code></pre>
 <p>Sidan innehåller fem tabeller där vi vill ha den första. Vi kan extrahera denna med</p>
 <pre class="r"><code>html_table(elements[[1]])</code></pre>
-<pre><code>## # A tibble: 55 x 7
-##    Placering Land      Guld Silver Brons `Totalt antalmeda~ `Placering efterant~
-##    &lt;chr&gt;     &lt;chr&gt;    &lt;int&gt;  &lt;int&gt; &lt;int&gt;              &lt;int&gt;                &lt;int&gt;
-##  1 1         USA          9      5     8                 22                    1
-##  2 2         Kina         9      5     7                 21                    2
-##  3 3         Japan        9      3     5                 17                    3
-##  4 4         ROC          5      7     4                 16                    4
-##  5 5         Storbri~     4      5     2                 11                    5
-##  6 6         Austral~     3      1     5                  9                    7
-##  7 6         Sydkorea     3      1     5                  9                    7
-##  8 8         Frankri~     2      2     3                  7                    9
-##  9 9         Kosovo       2      0     0                  2                   21
-## 10 10        Italien      1      4     6                 11                    5
-## # ... with 45 more rows</code></pre>
+<pre><code>## # A tibble: 78 x 7
+##    Placering Land            Guld Silver Brons `Totalt antalme~ `Placering efte~
+##    &lt;chr&gt;     &lt;chr&gt;          &lt;int&gt;  &lt;int&gt; &lt;int&gt;            &lt;int&gt;            &lt;int&gt;
+##  1 1         Kina              28     16    14               58                2
+##  2 2         USA               21     24    16               61                1
+##  3 3         Japan             17      5    10               32                4
+##  4 4         Australien        14      3    14               31                6
+##  5 5         ROC               12     20    15               47                3
+##  6 6         Storbritannien    10     10    12               32                4
+##  7 7         Frankrike          6     10     6               22                8
+##  8 8         Sydkorea           5      4     9               18               10
+##  9 9         Italien            4      9    15               28                7
+## 10 10        Nederländerna      4      7     6               17               11
+## # ... with 68 more rows</code></pre>
 <p>men väljer istället att utnyttja <code>class</code>-attributet <code>wikitable</code> eftersom medaljtabellen inte ligger först på alla OS-sidor</p>
 <pre class="r"><code>elements &lt;- html_elements(page, css = &quot;.wikitable&quot;)
 html_table(elements[[1]])</code></pre>
-<pre><code>## # A tibble: 55 x 7
-##    Placering Land      Guld Silver Brons `Totalt antalmeda~ `Placering efterant~
-##    &lt;chr&gt;     &lt;chr&gt;    &lt;int&gt;  &lt;int&gt; &lt;int&gt;              &lt;int&gt;                &lt;int&gt;
-##  1 1         USA          9      5     8                 22                    1
-##  2 2         Kina         9      5     7                 21                    2
-##  3 3         Japan        9      3     5                 17                    3
-##  4 4         ROC          5      7     4                 16                    4
-##  5 5         Storbri~     4      5     2                 11                    5
-##  6 6         Austral~     3      1     5                  9                    7
-##  7 6         Sydkorea     3      1     5                  9                    7
-##  8 8         Frankri~     2      2     3                  7                    9
-##  9 9         Kosovo       2      0     0                  2                   21
-## 10 10        Italien      1      4     6                 11                    5
-## # ... with 45 more rows</code></pre>
+<pre><code>## # A tibble: 78 x 7
+##    Placering Land            Guld Silver Brons `Totalt antalme~ `Placering efte~
+##    &lt;chr&gt;     &lt;chr&gt;          &lt;int&gt;  &lt;int&gt; &lt;int&gt;            &lt;int&gt;            &lt;int&gt;
+##  1 1         Kina              28     16    14               58                2
+##  2 2         USA               21     24    16               61                1
+##  3 3         Japan             17      5    10               32                4
+##  4 4         Australien        14      3    14               31                6
+##  5 5         ROC               12     20    15               47                3
+##  6 6         Storbritannien    10     10    12               32                4
+##  7 7         Frankrike          6     10     6               22                8
+##  8 8         Sydkorea           5      4     9               18               10
+##  9 9         Italien            4      9    15               28                7
+## 10 10        Nederländerna      4      7     6               17               11
+## # ... with 68 more rows</code></pre>
 <p>Punkten i <code>.wikitable</code> anger att det just är <code>class</code>-attributet vi skall välja efter (se <a href="https://www.w3schools.com/cssref/css_selectors.asp">CSS-väljare</a>). Ett verktyg som är användbart för att identifiera dessa är <a href="https://selectorgadget.com/">SelectorGadget</a>, som till exempel kan installeras som ett tillägg i Chrome.</p>
 <p>På linande sätt kan vi hämta aktuell tabell för Allsvenskan med</p>
 <pre class="r"><code>url &lt;- &quot;https://www.allsvenskan.se/tabell&quot;
@@ -1015,18 +1015,108 @@ html_table(elements[[1]])</code></pre>
 <pre><code>## # A tibble: 33 x 10
 ##    `#`   ``    LAG   ``             M     V     O     F     `+/-` P    
 ##    &lt;chr&gt; &lt;lgl&gt; &lt;chr&gt; &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
-##  1 1     NA    &quot;&quot;    Malmö FF       13    9     2     2     31-16 29   
-##  2 2     NA    &quot;&quot;    Djurgårdens IF 12    8     3     1     22-7  27   
+##  1 1     NA    &quot;&quot;    Djurgårdens IF 13    9     3     1     24-8  30   
+##  2 2     NA    &quot;&quot;    Malmö FF       13    9     2     2     31-16 29   
 ##  3 3     NA    &quot;&quot;    IF Elfsborg    13    7     2     4     19-13 23   
-##  4 4     NA    &quot;&quot;    Hammarby IF    12    6     3     3     24-16 21   
+##  4 4     NA    &quot;&quot;    Hammarby IF    13    6     4     3     25-17 22   
 ##  5 5     NA    &quot;&quot;    AIK            12    6     3     3     16-12 21   
 ##  6 6     NA    &quot;&quot;    IFK Norrköping 12    5     2     5     15-12 17   
-##  7 7     NA    &quot;&quot;    BK Häcken      12    4     4     4     17-16 16   
-##  8 8     NA    &quot;&quot;    IFK Göteborg   12    3     6     3     14-14 15   
-##  9 9     NA    &quot;&quot;    Halmstads BK   12    3     6     3     10-10 15   
-## 10 10    NA    &quot;&quot;    IK Sirius      12    4     3     5     14-23 15   
+##  7 7     NA    &quot;&quot;    Kalmar FF      13    4     5     4     12-14 17   
+##  8 8     NA    &quot;&quot;    BK Häcken      13    4     4     5     18-18 16   
+##  9 9     NA    &quot;&quot;    IFK Göteborg   12    3     6     3     14-14 15   
+## 10 10    NA    &quot;&quot;    Halmstads BK   12    3     6     3     10-10 15   
 ## # ... with 23 more rows</code></pre>
 <p>där SelectorGadget har använts för att hitta väljaren <code>.col-md-6</code>. Notera att rubrikerna behöver justering; tabellen är ju inte avsedd för skrapning och resultatet behöver därför ofta justeras. Vid webbskrapning är det viktigt att respektera att syftet i allmänhet inte är att dela data och därför inte belasta servrar i onödan. Upphovsrätten till data kan även vara skyddat genom <a href="https://lagen.nu/1960:729#P49">katalogskyddet</a>.</p>
+</div>
+<div id="kommunicera-med-en-sql-databas" class="section level4">
+<h4>Kommunicera med en SQL-databas</h4>
+<p><a href="https://sv.wikipedia.org/wiki/Structured_Query_Language">SQL</a> är det idag dominerande språket för att ställa frågor till relationsdatabaser. Syntax är lik den vi lärt oss från <code>tidyverse</code>s <code>dplyr</code>-paket och med den kunskapen är det inte svårt att lära sig ställa enkla frågor i SQL. Här kommer vi dock använda paketet <a href="https://dbplyr.tidyverse.org/"><code>dbplyr</code></a> som sköter översättningen till databasens språk.</p>
+<p>Innan vi kan ställa frågor till en databas behöver vi skapa en anslutning med <code>DBI::dbConnect</code>. Vi ansluter här till en öppen exempeldatabas <code>imdb_small</code> som innehåller ett mindre utrag ur <a href="https://www.imdb.com/">IMDB</a> (se <a href="https://relational.fit.cvut.cz/">Relational Dataset Repository</a> för en lista på deras öppna databaser)</p>
+<pre class="r"><code>con &lt;- DBI::dbConnect(
+  RMariaDB::MariaDB(),
+  host = &quot;relational.fit.cvut.cz&quot;,
+  port = 3306,
+  username = &quot;guest&quot;,
+  password = &quot;relational&quot;,
+  db = &quot;imdb_small&quot;
+)</code></pre>
+<p>Raden <code>RMariaDB::MariaDB()</code> anger hur vi skall ansluta, vilket beror på vilken mjukvara som driver databasen. I det här fallet är det en <a href="https://sv.wikipedia.org/wiki/MySQL">MySQL</a>-databas som stöds av R-paketet <code>RMariaDB</code> (se <a href="https://dbi.r-dbi.org/">DBI</a> för alternativ).</p>
+<p>Vi kan nu lista databasens tabeller med</p>
+<pre class="r"><code>DBI::dbListTables(con)</code></pre>
+<pre><code>## [1] &quot;actors&quot;           &quot;directors&quot;        &quot;directors_genres&quot; &quot;movies&quot;          
+## [5] &quot;movies_directors&quot; &quot;movies_genres&quot;    &quot;roles&quot;</code></pre>
+<p>och skapa en <em>virtuell</em> kopia av tabellen <code>movies</code> med</p>
+<pre class="r"><code>movies &lt;- tbl(con, &quot;movies&quot;)
+movies</code></pre>
+<pre><code>## # Source:   table&lt;movies&gt; [?? x 4]
+## # Database: mysql [guest@relational.fit.cvut.cz:NA/imdb_small]
+##        id name             year  rank
+##     &lt;int&gt; &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt;
+##  1  10920 Aliens           1986  8.20
+##  2  17173 Animal House     1978  7.5 
+##  3  18979 Apollo 13        1995  7.5 
+##  4  30959 Batman Begins    2005 NA   
+##  5  46169 Braveheart       1995  8.30
+##  6 109093 Fargo            1996  8.20
+##  7 111813 Few Good Men, A  1992  7.5 
+##  8 112290 Fight Club       1999  8.5 
+##  9 116907 Footloose        1984  5.80
+## 10 124110 Garden State     2004  8.30
+## # ... with more rows</code></pre>
+<p>Här noterar vi att antalet rader i tabellen är listat som <code>??</code>, vilket beror på att <code>dbplyr</code> ser till att bara hämta så mycket som är nödvändigt för att visa tabellens inledande rader. Vill vi hämta hela tabellen som en vanlig <code>tibble</code> använder vi <code>collect</code></p>
+<pre class="r"><code>collect(movies)</code></pre>
+<pre><code>## # A tibble: 36 x 4
+##        id name             year  rank
+##     &lt;int&gt; &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt;
+##  1  10920 Aliens           1986  8.20
+##  2  17173 Animal House     1978  7.5 
+##  3  18979 Apollo 13        1995  7.5 
+##  4  30959 Batman Begins    2005 NA   
+##  5  46169 Braveheart       1995  8.30
+##  6 109093 Fargo            1996  8.20
+##  7 111813 Few Good Men, A  1992  7.5 
+##  8 112290 Fight Club       1999  8.5 
+##  9 116907 Footloose        1984  5.80
+## 10 124110 Garden State     2004  8.30
+## # ... with 26 more rows</code></pre>
+<p>Som ett exempel skapar vi en tabell över alla <code>Sci-Fi</code>-filmer i databasen med</p>
+<pre class="r"><code>movies_genres &lt;- tbl(con, &quot;movies_genres&quot;)
+movies_genres %&gt;% 
+  filter(genre == &quot;Sci-Fi&quot;) %&gt;% 
+  left_join(movies, by = c(&quot;movie_id&quot; = &quot;id&quot;)) %&gt;% 
+  collect()</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##   movie_id genre  name         year  rank
+##      &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;       &lt;int&gt; &lt;dbl&gt;
+## 1    10920 Sci-Fi Aliens       1986  8.20
+## 2   147603 Sci-Fi Hollow Man   2000  5.30
+## 3   207992 Sci-Fi Matrix, The  1999  8.5 
+## 4   254943 Sci-Fi Pi           1998  7.5 
+## 5   313459 Sci-Fi Star Wars    1977  8.80
+## 6   350424 Sci-Fi Vanilla Sky  2001  6.90</code></pre>
+<p>Vi kan även se den SQL-fråga som genererade resultatet med <code>show_query</code></p>
+<pre class="r"><code>movies_genres %&gt;% 
+  filter(genre == &quot;Sci-Fi&quot;) %&gt;% 
+  left_join(movies, by = c(&quot;movie_id&quot; = &quot;id&quot;)) %&gt;% 
+  show_query()</code></pre>
+<pre><code>## &lt;SQL&gt;
+## SELECT `movie_id`, `genre`, `name`, `year`, `rank`
+## FROM (SELECT *
+## FROM `movies_genres`
+## WHERE (`genre` = &#39;Sci-Fi&#39;)) `LHS`
+## LEFT JOIN `movies` AS `RHS`
+## ON (`LHS`.`movie_id` = `RHS`.`id`)</code></pre>
+<p>Slutligen avslutar vi med att stänga ned anslutningen för att inte belasta servern i onödan</p>
+<pre class="r"><code>DBI::dbDisconnect(con)</code></pre>
+<p>Sammanfattningsvis</p>
+<ul>
+<li>Anslut till databasen med <code>DBI::dbConnect</code>.</li>
+<li>Lista tabeller med <code>DBI::dbListTables</code>.</li>
+<li>Skapa virtuella tabeller med <code>tbl</code>.</li>
+<li>Skriv din kod med virtuella tabelller och vanlig <code>tidyverse</code>-syntax.</li>
+<li>Avsluta med <code>collect</code>.</li>
+<li>Stäng anslutningen med <code>DBI::dbDisconnect</code>.</li>
+</ul>
 </div>
 </div>
 <div id="övningar-7" class="section level3">
@@ -1082,6 +1172,10 @@ html_text(elements)[-1]</code></pre>
 <ul>
 <li>Identifiera CSS-väljare och skrapa övriga kolumner i tabellen.</li>
 </ul>
+</div>
+<div id="relational-dataset-repository" class="section level5">
+<h5>Relational Dataset Repository</h5>
+<p>Anslut till valfri databas på <a href="https://relational.fit.cvut.cz/">Relational Dataset Repository</a> och prova ställa frågor som ovan. En mer fulltändig version av IMDB finns till exempel i <code>db = "imdb_ijs"</code>. Glöm inte stänga anslutningen när du är färdig.</p>
 <hr />
 </div>
 </div>
@@ -1141,6 +1235,9 @@ $(document).ready(function () {
 
 <script>
 $(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
 
     // move toc-ignore selectors from section div to header
     $('div.section.toc-ignore')
