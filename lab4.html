@@ -290,7 +290,7 @@ $(document).ready(function () {
                             &quot;Hanö&quot;, &quot;Harstena&quot;))</code></pre>
 <p><img src="lab4_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
 <ul>
-<li><p><strong>Bonus:</strong> I föregående två deluppgifter, ersätt tropiska datum med det vanligare begreppet <a href="https://www.smhi.se/kunskapsbanken/meteorologi/tropiska-natter-1.1085">tropiska nätter</a>, där natten definieras som kl 20-08. Gör du denna variant behöver du inte redovisa tropiska datum.</p></li>
+<li><p><strong>Bonus:</strong> I föregående två deluppgifter, ersätt tropiska datum med det vanligare begreppet <a href="https://www.smhi.se/kunskapsbanken/meteorologi/tropiska-natter-1.1085">tropiska nätter</a>, där natten definieras som kl 20-08. Som ovan skall en natt bara räknas om det finns timvisa observationer för hela natten. Gör du denna variant behöver du inte redovisa tropiska datum.</p></li>
 <li><p><strong>Bonus:</strong> Genom att anropa APIet med <code>https://opendata-download-metobs.smhi.se/api/version/1.0/parameter/1/station-set/all/period/latest-hour/data.csv</code> får du en tabell över temperaturen den senaste timmen på de stationer det finns mätningar (du väljer själv <code>csv</code> eller <code>json</code>). Skriv en funktion <code>plot_temp &lt;- function(){ ... }</code> som ritar aktuella temperaturer i en karta som nedan.</p></li>
 </ul>
 <pre class="r"><code>plot_temp()</code></pre>
